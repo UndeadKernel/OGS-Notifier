@@ -1,16 +1,64 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-<script>
-	// check if loggged in
-	var response;
-	$.ajax({
-		url: "http://ogs.guffin.info/includes/functions/ajax/gameCount.php?only_unviewed=true",
-		context: document.body,
-		success: function(response){
-			if (response == -1) {
-				$('#login-link').show();
-			}
-		}
-	});
-</script>
+<script type="text/javascript" src="functions.js"></script>
 
-<a id='login-link' style='color:blue; display:none;' href="http://www.online-go.com/login.php">Login</a>
+<div id="login-wrapper">
+<fieldset class="menulogin">
+    <legend>Login</legend>
+    <label style="float:left;">User</label>
+    <div class="menulogin">
+        <input type="text" name="userName" value="" id="username" class="menulogin"/>
+        <input type="hidden" name="validLoginAttempt" value="1" />
+    </div>
+    <label style="float:left;">Password</label>
+    <div class="menulogin">
+        <input type="password" name="passWord" id="password" value="" class="menulogin"/>
+    </div>
+    <input id='submit' style="width:100%; margin-bottom:10px;" type="submit" value="Log In" />
+    <center><a class="main" href="javascript:gotoLogin();">Open Login Page</a></center>
+
+    <div style="display:none;" id="message"></div>
+</fieldset>
+</div>
+
+<script>
+
+    var root = localStorage['url'];
+    var view = localStorage['include_viewed'] == 'on' ? "" : "?only_unviewed=true";
+
+    function gotoLogin() {
+        chrome.tabs.create( {url: root+"/login.php"} );
+    }
+
+
+    // check if loggged in
+    var response;
+
+    if (!localStorage['update-interval']) {
+        localStorage['update-interval'] = 5000;
+    }
+
+    if (!localStorage['logged-in']) {
+        $('#login-link').show();
+    }
+
+    // on submission, create a new tab, send the login information 
+    $('#submit').click( function(event) {
+
+        $.ajax({
+            type: 'POST',
+            url: root+"/includes/functions/ajax/login.php",
+            data: {passWord: $('#password').attr("value"), userName: $('#username').attr("value")},
+            success: function(response){
+                if (response == 'ok') {
+                    localStorage['logged-in'] = true;
+                    setTimeout( update, localStorage['update-interval']);
+                }
+                    $('#message').html(response);
+                    $('#message').show();
+                    setTimeout( function() { $('#message').hide();} , 5000);
+            }
+        });
+
+        event.stopPropagation();
+    });
+</script>
