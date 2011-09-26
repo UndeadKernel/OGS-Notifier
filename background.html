@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<script>
+			function update() {
+				$.ajax({
+					url: "http://ogs.guffin.info/includes/functions/ajax/gameCount.php?only_unviewed=true",
+					context: document.body,
+					success: function(response){
+
+						if (response == -1) {
+							//clearInterval(window.updater);
+							response = "";
+						}
+						chrome.browserAction.setBadgeText({text:response});
+					}
+				});
+			}
+
+			update();
+			chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 0]});
+
+			window.updater = window.setInterval(update, 1000);
+		</script>
+	</head>
+</html>

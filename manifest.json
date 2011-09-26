@@ -1,0 +1,16 @@
+{
+	"name": "OGS Notifier",
+	"version": "0.1",
+	"background_page": "background.html",
+	"description": "Checks for games where it is your turn.",
+	"browser_action": {
+		"default_icon": "icon.png",
+		"default_title": "OGS Notifier",      // optional; shown in tooltip
+		"popup": "popup.html"
+	},
+	"permissions": [
+		"http://www.online-go.com", "http://online-go.com",
+		"http://www.online-go.org", "http://online-go.org",
+		    "tabs", "http://*/*"
+		]
+}
