@@ -20,6 +20,10 @@
 </fieldset>
 </div>
 
+<div id="logged-in-wrapper" style="white-space: nowrap;">
+    Coming soon...
+</div>
+
 <script>
 
     var root = localStorage['url'];
@@ -33,7 +37,14 @@
     var response;
 
     if (localStorage['logged-in'] === 'false') {
-        $('#login-link').show();
+        $('#login-wrapper').show();
+        $('#logged-in-wrapper').hide();
+    } else {
+        chrome.tabs.create( {url: root+"/login.php"} );
+
+        
+        $('#logged-in-wrapper').show();
+        $('#login-wrapper').hide();
     }
 
     // on submission, create a new tab, send the login information 
@@ -57,3 +68,6 @@
         event.stopPropagation();
     });
 </script>
+
+
+<!-- do XML parsing -->

@@ -2,7 +2,7 @@
 function invalidateCurrentTimer()
 {
     // DEBUG:
-    console.log("Clearing old timer: " + localStorage['timeout-id']);
+    //console.log("Clearing old timer: " + localStorage['timeout-id']);
     if (localStorage['timeout-id'] !== '') {
         clearTimeout(localStorage['timeout-id']);
         localStorage['timeout-id'] = '';
@@ -24,7 +24,7 @@ function update() {
     success: function(response){
 
         // DEBUG
-        localStorage['count'] ++;
+        //localStorage['count'] ++;
 
 
         // if we're not logged in, stop checking
@@ -35,8 +35,8 @@ function update() {
 
         } else {
 
-            // wait for at least 30 seconds and reload the function
-            var wait = Math.max(30000, localStorage['interval']);
+            // wait for at least 20 seconds and reload the function
+            var wait = Math.max(20000, localStorage['interval']);
 
             localStorage['timeout-id'] = setTimeout(update, wait);
 
@@ -46,7 +46,7 @@ function update() {
             localStorage['logged-in']   = 'true';
         }
         // DEBUG:
-        console.log("Timer " + localStorage['timeout-id'] + " reported \""+ response + "\" ");
+        //console.log("Timer " + localStorage['timeout-id'] + " reported \""+ response + "\" ");
 
         // update the numerical overlay
         chrome.browserAction.setBadgeText({text:response});
