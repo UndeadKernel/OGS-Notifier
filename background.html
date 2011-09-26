@@ -2,7 +2,19 @@
 	<head>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 		<script type="text/javascript" src="functions.js"></script>
-		<script>
+        <script>
+
+            // if a timeout hasn't been set, make it 10 seconds
+            if (!localStorage['interval']) {
+                localStorage['interval'] = 10000;
+            }
+
+            // DEBUG:
+            localStorage['count'] = 0;
+
+            // invalidate any stored counters when we first load
+            invalidateCurrentTimer();
+
 			update(); // starts polling for games
 		</script>
 	</head>

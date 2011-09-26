@@ -29,13 +29,8 @@
         chrome.tabs.create( {url: root+"/login.php"} );
     }
 
-
     // check if loggged in
     var response;
-
-    if (!localStorage['update-interval']) {
-        localStorage['update-interval'] = 5000;
-    }
 
     if (!localStorage['logged-in']) {
         $('#login-link').show();
@@ -51,7 +46,7 @@
             success: function(response){
                 if (response == 'ok') {
                     localStorage['logged-in'] = true;
-                    setTimeout( update, localStorage['update-interval']);
+                    setInterval( update, localStorage['interval']);
                 }
                     $('#message').html(response);
                     $('#message').show();

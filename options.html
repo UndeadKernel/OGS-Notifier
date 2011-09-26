@@ -64,32 +64,31 @@
 
         <script>
             // When page initially loads, set the proper 'include-viewed' selection
-            if (localStorage['include_viewed'] == 'on')  {
-                $('#include_viewed').click();
+            if (localStorage['include_viewed'] == 'true')  {
+                $('#include_viewed').prop('checked', true);
             }
 
             // When page initially loads, set the proper interval selection
             switch(localStorage['interval']) {
                 case 20000:
-                $('#int20').click();
+                $('#int20').prop('checked', true);
                 break;
                 case 300000:
-                $('#int300').click();
+                $('#int300').prop('checked', true);
                 break;
                 case 60000:
                 default:
-                $('#int60').click();
+                $('#int60').prop('checked', true);
                 break;
             }
 
             // update the interval setting
-            function updateInterval(timeout) {
-                localStorage['interval'] = timeout;
+            function updateInterval(interval) {
+                localStorage['interval'] = interval;
 
-                // if there's a timer running, stop it and start a new one
-                if (localStorage['timeout-id'] != 0) {
-                    console.log("Clearing old timer: " + localStorage['timeout-id']);
-                    clearTimeout(localStorage['timeout-id']);
+                // There's a timer running: invalidate it, so that update() can start a new one
+                if (localStorage['interval-id'] !== '') {
+                    invalidateCurrentTimer();
                 }
 
                 update();
@@ -99,9 +98,9 @@
             function updateURL(url) {
                 localStorage['url'] = url;
 
-                // there's a timer running
-                if (localStorage['timeout-id'] != 0) {
-                    clearTimeout(localStorage['timeout-id']);
+                // There's a timer running: invalidate it, so that update() can start a new one
+                if (localStorage['interval-id'] !== '') {
+                    invalidateCurrentTimer();
                 }
 
                 update();
@@ -110,25 +109,25 @@
             // When the page initially loads, select the appropriate base url
             switch(localStorage['url']) {
                case 'http://www.online-go.org':
-               $('#wwworg').click();
+               $('#wwworg').prop('checked', true);
                break;
 
                // TODO: REMOVE
                case 'http://ogs.guffin.info':
-               $('#ogsguf').click();
+               $('#ogsguf').prop('checked', true);
                break;
 
                case 'http://online-go.com':
-               $('#com').click();
+               $('#com').prop('checked', true);
                break;
 
                case 'http://online-go.org':
-               $('#org').click();
+               $('#org').prop('checked', true);
                break;
 
                case 'http://www.online-go.com':
                default:
-               $('#wwwcom').click();
+               $('#wwwcom').prop('checked', true);
            }
            </script>
 
