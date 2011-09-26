@@ -3,9 +3,74 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
         <script type="text/javascript" src="functions.js"></script>
 
+        <style type="text/css">
+            body {
+                background-color: #257;
+            }
 
-        <input id='include_viewed' type='checkbox' onclick="localStorage['include_viewed'] = this.checked;" /> include viewed games in count
+            .content-wrapper {
+                display:table;
+                margin: 10px auto;
+                padding: 10px;
+                background-color: #47A;
+                border: 1px solid #CCC;
+                width: 300px;
+            }
 
+            img {
+                display:block;
+                text-align:center;
+                margin: 0 auto 10px;
+            }
+
+            input {
+                margin: 0;
+                padding: 0;
+            }
+
+            .help {
+                color: white;
+                max-width: 300px;
+                text-align: justify;
+                display : none;
+            }
+
+            p {
+                margin:0;
+                padding:0;
+            }
+
+            a {
+                color: #333;
+            }
+
+
+        </style>
+
+        <div class='content-wrapper'>
+
+            
+            <img src='http://www.online-go.com/images/logo/main_logo.png' alt='ogs logo' />
+
+            <input id='include_viewed' type='checkbox' onclick="localStorage['include_viewed'] = this.checked;" />
+            include viewed games in count<sup>[<a href="javascript:$('#viewed-help').toggle()">?</a>]</sup>
+
+        <p class='help' id='viewed-help'>
+        The notifier shows the number of games where it is your turn to move and the game has not been viewed (i.e. on
+        the mygames page, the board link appears in bold text).  This option includes all games where it is your turn to
+        move, whether viewed or not.
+        </p>
+
+        <hr>
+
+        <p>
+        Site URL<sup>[<a href="javascript:$('#url-help').toggle()">?</a>]</sup>
+        </p>
+
+        <p class='help' id='url-help'>
+        You can select one of the following URLs to use as your primary login URL.  If you don't know what this means,
+        just leave it set on 'http://www.online-go.com'.
+        </p>
 
         <table>
 
@@ -42,6 +107,17 @@
                 </td>
             </tr>
         </table>
+        
+        <hr>
+
+        <p>
+        Update Interval<sup>[<a href="javascript:$('#interval-help').toggle()">?</a>]</sup>
+        </p>
+
+        <p class='help' id='interval-help'>
+        Selects how often the extension updates the number of games.
+        </p>
+
 
 
         <table>
@@ -61,6 +137,8 @@
                 </td>
             </tr>
         </table>
+
+    </div>
 
         <script>
             // When page initially loads, set the proper 'include-viewed' selection
@@ -87,7 +165,7 @@
                 localStorage['interval'] = interval;
 
                 // There's a timer running: invalidate it, so that update() can start a new one
-                if (localStorage['interval-id'] !== '') {
+                if (localStorage['timeout-id'] !== '') {
                     invalidateCurrentTimer();
                 }
 
@@ -99,7 +177,7 @@
                 localStorage['url'] = url;
 
                 // There's a timer running: invalidate it, so that update() can start a new one
-                if (localStorage['interval-id'] !== '') {
+                if (localStorage['timeout-id'] !== '') {
                     invalidateCurrentTimer();
                 }
 

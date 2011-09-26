@@ -32,7 +32,7 @@
     // check if loggged in
     var response;
 
-    if (!localStorage['logged-in']) {
+    if (localStorage['logged-in'] === 'false') {
         $('#login-link').show();
     }
 
@@ -46,11 +46,11 @@
             success: function(response){
                 if (response == 'ok') {
                     localStorage['logged-in'] = true;
-                    setInterval( update, localStorage['interval']);
+                    update();
                 }
-                    $('#message').html(response);
-                    $('#message').show();
-                    setTimeout( function() { $('#message').hide();} , 5000);
+                $('#message').html(response);
+                $('#message').show();
+                setTimeout( function() { $('#message').hide();} , 5000);
             }
         });
 
