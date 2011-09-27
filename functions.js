@@ -2,7 +2,7 @@
 function invalidateCurrentTimer()
 {
     // DEBUG:
-    if (window.debug == 1) {
+    if (localStorage['debug'] == 1) {
         console.log("Clearing old timer: " + localStorage['timeout-id']);
     }
 
@@ -27,7 +27,7 @@ function update() {
     success: function(response){
 
         // DEBUG
-        if (window.debug == 1) {
+        if (localStorage['debug'] == 1) {
             localStorage['count'] ++;
         }
 
@@ -45,7 +45,7 @@ function update() {
             localStorage['timeout-id'] = setTimeout(update, wait);
 
             // DEBUG:
-            if (window.debug == 1) {
+            if (localStorage['debug'] == 1) {
                 console.log("Started new timer " + localStorage['timeout-id'] + ", waiting "+ (wait / 1000) + " seconds");
             }
 
@@ -53,7 +53,7 @@ function update() {
         }
 
         // DEBUG:
-        if (window.debug == 1) {
+        if (localStorage['debug'] == 1) {
             console.log("Timer " + localStorage['timeout-id'] + " reported \""+ response + "\" ");
         }
 

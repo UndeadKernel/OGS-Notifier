@@ -4,11 +4,11 @@
 		<script type="text/javascript" src="functions.js"></script>
         <script>
 
-            //window.debug = 1; // debug on
-            window.debug = 0; // debug off
+            //localStorage['debug'] = 1; // debug on
+            localStorage['debug'] = 0; // debug off
 
             // DEBUG: clear existing values on load
-            if (window.debug == 1) {
+            if (localStorage['debug'] == 1) {
                 localStorage.removeItem('timeout-id');
                 localStorage.removeItem('interval');
                 localStorage.removeItem('logged-in');
@@ -26,8 +26,12 @@
                 localStorage['include_viewed'] = 'false';
             }
 
+
+
             // DEBUG:
-            //localStorage['count'] = 0;
+            if (localStorage['debug'] == 1) {
+                localStorage['count'] = 0;
+            }
 
             // invalidate any stored counters when the browser starts up
             invalidateCurrentTimer();

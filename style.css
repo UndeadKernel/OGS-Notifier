@@ -1,0 +1,46 @@
+body {
+    background-color: #257;
+}
+
+.alert {
+    color: #8F0;
+    text-align: center;
+    display:block;
+}
+
+.content-wrapper {
+    display:table;
+    margin: 10px auto;
+    padding: 10px;
+    background-color: #47A;
+    border: 1px solid #CCC;
+    width: 300px;
+}
+
+img {
+    display:block;
+    text-align:center;
+    margin: 0 auto 10px;
+}
+
+input {
+    margin: 0;
+    padding: 0;
+}
+
+.help {
+    color: white;
+    max-width: 300px;
+    text-align: justify;
+    display : none;
+}
+
+p {
+    margin:0;
+    padding:0;
+}
+
+a {
+    color: #333;
+}
+

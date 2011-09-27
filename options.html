@@ -2,57 +2,15 @@
 	<head>
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
         <script type="text/javascript" src="functions.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css" />
 
-        <style type="text/css">
-            body {
-                background-color: #257;
-            }
-
-            .content-wrapper {
-                display:table;
-                margin: 10px auto;
-                padding: 10px;
-                background-color: #47A;
-                border: 1px solid #CCC;
-                width: 300px;
-            }
-
-            img {
-                display:block;
-                text-align:center;
-                margin: 0 auto 10px;
-            }
-
-            input {
-                margin: 0;
-                padding: 0;
-            }
-
-            .help {
-                color: white;
-                max-width: 300px;
-                text-align: justify;
-                display : none;
-            }
-
-            p {
-                margin:0;
-                padding:0;
-            }
-
-            a {
-                color: #333;
-            }
-
-
-        </style>
 
         <div class='content-wrapper'>
 
-            
+
             <img src='http://www.online-go.com/images/logo/main_logo.png' alt='ogs logo' />
 
-            <input id='include_viewed' type='checkbox' onclick="localStorage['include_viewed'] = this.checked;" />
+            <input id='include_viewed' type='checkbox' onclick="updateViewed(this.checked);" />
             include viewed games in count<sup>[<a href="javascript:$('#viewed-help').toggle()">?</a>]</sup>
 
         <p class='help' id='viewed-help'>
@@ -98,7 +56,7 @@
                 </td>
             </tr>
         </table>
-        
+
         <hr>
 
         <p>
@@ -153,30 +111,6 @@
                 break;
             }
 
-            // update the interval setting
-            function updateInterval(interval) {
-                localStorage['interval'] = interval;
-
-                // There's a timer running: invalidate it, so that update() can start a new one
-                if (localStorage['timeout-id'] !== '') {
-                    invalidateCurrentTimer();
-                }
-
-                update();
-            }
-
-            // update the base url setting
-            function updateURL(url) {
-                localStorage['url'] = url;
-
-                // There's a timer running: invalidate it, so that update() can start a new one
-                if (localStorage['timeout-id'] !== '') {
-                    invalidateCurrentTimer();
-                }
-
-                update();
-            }
-
             // When the page initially loads, select the appropriate base url
             switch(localStorage['url']) {
                case 'http://www.online-go.org':
@@ -195,6 +129,37 @@
                default:
                $('#wwwcom').prop('checked', true);
            }
+
+            // update the interval setting
+            function updateInterval(interval) {
+                localStorage['interval'] = interval;
+
+                performUpdate();
+            }
+
+            // update the base url setting
+            function updateURL(url) {
+                localStorage['url'] = url;
+
+                performUpdate();
+            }
+
+            // update the viewed option
+            function updateViewed(val) {
+                localStorage['include_viewed'] = val;
+                performUpdate();
+            }
+
+            function performUpdate() {
+
+                // There's a timer running: invalidate it, so that update() can start a new one
+                if (localStorage['timeout-id'] !== '') {
+                    invalidateCurrentTimer();
+                }
+
+                update();
+            }
+
            </script>
 
 	</head>

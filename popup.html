@@ -1,23 +1,46 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
 <script type="text/javascript" src="functions.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css" />
 
-<div id="login-wrapper">
-<fieldset class="menulogin">
-    <legend>Login</legend>
-    <label style="float:left;">User</label>
-    <div class="menulogin">
-        <input type="text" name="userName" value="" id="username" class="menulogin"/>
-        <input type="hidden" name="validLoginAttempt" value="1" />
-    </div>
-    <label style="float:left;">Password</label>
-    <div class="menulogin">
-        <input type="password" name="passWord" id="password" value="" class="menulogin"/>
-    </div>
-    <input id='submit' style="width:100%; margin-bottom:10px;" type="submit" value="Log In" />
-    <center><a class="main" href="javascript:gotoLogin();">Open Login Page</a></center>
+<div class='content-wrapper'>
+    <div id="login-wrapper">
 
-    <div style="display:none;" id="message"></div>
-</fieldset>
+        <span class='alert'>Error: not logged in</span>
+
+        <fieldset class="menulogin">
+            <legend>Login</legend>
+
+            <table>
+                <tr> 
+                    <td> <label style="float:left;">User</label> </td>
+                    <td>
+                        <div class="menulogin">
+                            <input type="text" name="userName" value="" id="username" class="menulogin"/>
+                            <input type="hidden" name="validLoginAttempt" value="1" />
+                        </div>
+                    </td>
+                </tr>
+                <tr> 
+                    <td> <label style="float:left;">Password</label> </td>
+                    <td>
+                        <div class="menulogin">
+                            <input type="password" name="passWord" id="password" value="" class="menulogin"/>
+                        </div>
+                    </td>
+                </tr>
+                <tr> 
+                    <td>
+                        <input id='submit' style="width:100%; margin: 10px 0;" type="submit" value="Log In" />
+                    </td>
+                    <td style="text-align:right;">
+                        <a class="main" href="javascript:gotoLogin();">Open Login Page</a>
+                    </td>
+                </tr>
+            </table>
+
+            <div style="display:none;" id="message"></div>
+        </fieldset>
+    </div>
 </div>
 
 <script>
