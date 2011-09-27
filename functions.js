@@ -23,43 +23,43 @@ function update() {
 
     $.ajax({
         url: root + "/includes/functions/ajax/gameCount.php" + view,
-    context: document.body,
-    success: function(response){
+        context: document.body,
+        success: function(response){
 
-        // DEBUG
-        if (localStorage['debug'] == 1) {
-            localStorage['count'] ++;
-        }
+            // DEBUG
+            if (localStorage['debug'] == 1) {
+                localStorage['count'] ++;
+            }
 
-        // if we're not logged in, stop checking
-        if (response == -1) {
-            response = "err";
-            localStorage['logged-in'] = 'false';
-            invalidateCurrentTimer();
+            // if we're not logged in, stop checking
+            if (response == -1) {
+                response = "err";
+                localStorage['logged-in'] = 'false';
+                invalidateCurrentTimer();
 
-        } else {
+            } else {
 
-            // wait for at least 20 seconds and reload the function
-            var wait = Math.max(20000, localStorage['interval']);
+                // wait for at least 20 seconds and reload the function
+                var wait = Math.max(20000, localStorage['interval']);
 
-            localStorage['timeout-id'] = setTimeout(update, wait);
+                localStorage['timeout-id'] = setTimeout(update, wait);
+
+                // DEBUG:
+                if (localStorage['debug'] == 1) {
+                    console.log("Started new timer " + localStorage['timeout-id'] + ", waiting "+ (wait / 1000) + " seconds");
+                }
+
+                localStorage['logged-in']   = 'true';
+            }
 
             // DEBUG:
             if (localStorage['debug'] == 1) {
-                console.log("Started new timer " + localStorage['timeout-id'] + ", waiting "+ (wait / 1000) + " seconds");
+                console.log("Timer " + localStorage['timeout-id'] + " reported \""+ response + "\" ");
             }
 
-            localStorage['logged-in']   = 'true';
+            // update the numerical overlay
+            chrome.browserAction.setBadgeText({text:response});
         }
-
-        // DEBUG:
-        if (localStorage['debug'] == 1) {
-            console.log("Timer " + localStorage['timeout-id'] + " reported \""+ response + "\" ");
-        }
-
-        // update the numerical overlay
-        chrome.browserAction.setBadgeText({text:response});
-    }
     });
 }
 
