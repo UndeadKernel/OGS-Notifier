@@ -20,10 +20,6 @@
 </fieldset>
 </div>
 
-<div id="logged-in-wrapper" style="white-space: nowrap;">
-    Coming soon...
-</div>
-
 <script>
 
     var root = localStorage['url'];
@@ -37,36 +33,37 @@
     var response;
 
     if (localStorage['logged-in'] === 'false') {
+
         $('#login-wrapper').show();
-        $('#logged-in-wrapper').hide();
+
+        // on submission, create a new tab, send the login information
+        $('#submit').click( function(event) {
+
+            $.ajax({
+                type: 'POST',
+                url: root+"/includes/functions/ajax/login.php",
+                data: {passWord: $('#password').attr("value"), userName: $('#username').attr("value")},
+                success: function(response){
+                    if (response == 'ok') {
+                        localStorage['logged-in'] = true;
+                        update();
+                    }
+                    $('#message').html(response);
+                    $('#message').show();
+                    setTimeout( function() { $('#message').hide();} , 5000);
+                }
+            });
+
+            event.stopPropagation();
+        });
+
     } else {
         chrome.tabs.create( {url: root+"/login.php"} );
+        window.close();
 
-        
-        $('#logged-in-wrapper').show();
         $('#login-wrapper').hide();
     }
 
-    // on submission, create a new tab, send the login information 
-    $('#submit').click( function(event) {
-
-        $.ajax({
-            type: 'POST',
-            url: root+"/includes/functions/ajax/login.php",
-            data: {passWord: $('#password').attr("value"), userName: $('#username').attr("value")},
-            success: function(response){
-                if (response == 'ok') {
-                    localStorage['logged-in'] = true;
-                    update();
-                }
-                $('#message').html(response);
-                $('#message').show();
-                setTimeout( function() { $('#message').hide();} , 5000);
-            }
-        });
-
-        event.stopPropagation();
-    });
 </script>
 
 
