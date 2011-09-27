@@ -58,7 +58,9 @@ function update() {
             }
 
             // update the numerical overlay
-            chrome.browserAction.setBadgeText({text:response});
+	    if (response == 0 && localStorage['display_zero'] !== 'true') 
+		    response = "";  // zero games = no badge
+	    chrome.browserAction.setBadgeText({text:response});
         }
     });
 }

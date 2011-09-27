@@ -10,13 +10,27 @@
 
             <img src='http://www.online-go.com/images/logo/main_logo.png' alt='ogs logo' />
 
-            <input id='include_viewed' type='checkbox' onclick="updateViewed(this.checked);" />
-            include viewed games in count<sup>[<a href="javascript:$('#viewed-help').toggle()">?</a>]</sup>
+            <div>
+                <input id='include_viewed' type='checkbox' onclick="updateViewed(this.checked);" />
+                include viewed games in count<sup>[<a href="javascript:$('#viewed-help').toggle()">?</a>]</sup>
+            </div>
 
             <p class='help' id='viewed-help'>
-            The notifier shows the number of games where it is your turn to move and the game has not been viewed (i.e. on
-            the mygames page, the board link appears in bold text).  This option includes all games where it is your turn to
-            move, whether viewed or not.
+            The notifier shows the number of games where it is your turn to
+            move and the game has not been viewed (i.e. on the mygames page,
+            the board link appears in bold text).  This option includes all
+            games where it is your turn to move, whether viewed or not.
+            </p>
+
+            <div>
+                <input id='display-zero' type='checkbox' onclick="updateDisplayZero(this.checked);" />
+                display '0' for no games to move<sup>[<a href="javascript:$('#display-help').toggle()">?</a>]</sup>
+            </div>
+
+            <p class='help' id='display-help'>
+            If it is not your turn in any games, the notifier shows a number
+            zero in the red badge if this checkbox is selected, or no badge at
+            all if it is not.
             </p>
 
             <hr>
@@ -147,6 +161,12 @@
             // update the viewed option
             function updateViewed(val) {
                 localStorage['include_viewed'] = val;
+                performUpdate();
+            }
+
+            // update the display zeros option
+            function updateDisplayZero(val) {
+                localStorage['display_zero'] = val;
                 performUpdate();
             }
 
