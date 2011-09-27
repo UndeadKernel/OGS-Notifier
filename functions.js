@@ -2,7 +2,10 @@
 function invalidateCurrentTimer()
 {
     // DEBUG:
-    //console.log("Clearing old timer: " + localStorage['timeout-id']);
+    if (window.debug == 1) {
+        console.log("Clearing old timer: " + localStorage['timeout-id']);
+    }
+
     if (localStorage['timeout-id'] !== '') {
         clearTimeout(localStorage['timeout-id']);
         localStorage['timeout-id'] = '';
@@ -15,7 +18,7 @@ function invalidateCurrentTimer()
 function update() {
     chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 0]});
 
-    var root = localStorage['url']; 
+    var root = localStorage['url'];
     var view = localStorage['include_viewed'] == 'true' ? "" : "?only_unviewed=true";
 
     $.ajax({
@@ -24,8 +27,9 @@ function update() {
     success: function(response){
 
         // DEBUG
-        //localStorage['count'] ++;
-
+        if (window.debug == 1) {
+            localStorage['count'] ++;
+        }
 
         // if we're not logged in, stop checking
         if (response == -1) {
@@ -41,12 +45,17 @@ function update() {
             localStorage['timeout-id'] = setTimeout(update, wait);
 
             // DEBUG:
-            //console.log("Started new timer " + localStorage['timeout-id'] + ", waiting "+ (wait / 1000) + " seconds");
+            if (window.debug == 1) {
+                console.log("Started new timer " + localStorage['timeout-id'] + ", waiting "+ (wait / 1000) + " seconds");
+            }
 
             localStorage['logged-in']   = 'true';
         }
+
         // DEBUG:
-        //console.log("Timer " + localStorage['timeout-id'] + " reported \""+ response + "\" ");
+        if (window.debug == 1) {
+            console.log("Timer " + localStorage['timeout-id'] + " reported \""+ response + "\" ");
+        }
 
         // update the numerical overlay
         chrome.browserAction.setBadgeText({text:response});

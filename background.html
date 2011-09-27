@@ -4,15 +4,32 @@
 		<script type="text/javascript" src="functions.js"></script>
         <script>
 
-            // if a timeout hasn't been set, make it 10 seconds
-            if (!localStorage['interval']) {
-                localStorage['interval'] = 10000;
+            //window.debug = 1; // debug on
+            window.debug = 0; // debug off
+
+            // DEBUG: clear existing values on load
+            if (window.debug == 1) {
+                localStorage.removeItem('timeout-id');
+                localStorage.removeItem('interval');
+                localStorage.removeItem('logged-in');
+                localStorage.removeItem('url');
+                localStorage.removeItem('include_viewed');
+                console.log("Reset values");
+            }
+
+            // load default settings if they're not there
+            if (localStorage['logged-in'] === undefined) {
+                localStorage['timeout-id']     = '';
+                localStorage['interval']       = 20000;
+                localStorage['logged-in']      = "false";
+                localStorage['url']            = "http://www.online-go.com";
+                localStorage['include_viewed'] = 'false';
             }
 
             // DEBUG:
             //localStorage['count'] = 0;
 
-            // invalidate any stored counters when we first load
+            // invalidate any stored counters when the browser starts up
             invalidateCurrentTimer();
 
 			update(); // starts polling for games
