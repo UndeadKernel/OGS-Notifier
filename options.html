@@ -4,8 +4,9 @@
         <script type="text/javascript" src="functions.js"></script>
         <link rel="stylesheet" type="text/css" href="style.css" />
 
+        <title>OGS Notifier options</title>
 
-        <div class='content-wrapper'>
+        <div class='content-wrapper options'>
 
 
             <img src='http://www.online-go.com/images/logo/main_logo.png' alt='ogs logo' />
@@ -86,17 +87,17 @@
             <table>
                 <tr>
                     <td>
-                        <input id='int20' name='interval' type='radio' onclick="updateInterval(20000)" /> Twenty Seconds
+                        <input id='int5' name='interval' type='radio' onclick="updateInterval(5000)" /> Five Seconds
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id='int10' name='interval' type='radio' onclick="updateInterval(10000)" /> Ten Seconds 
                     </td>
                 </tr>
                 <tr>
                     <td>
                         <input id='int60' name='interval' type='radio' onclick="updateInterval(60000)" /> One Minute
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <input id='int300' name='interval' type='radio' onclick="updateInterval(300000)" /> Five Minutes
                     </td>
                 </tr>
             </table>
@@ -111,17 +112,17 @@
 
             // When page initially loads, set the proper interval selection
             switch(localStorage['interval']) {
-                case 20000:
-                $('#int20').prop('checked', true);
-                break;
-
-                case 300000:
-                $('#int300').prop('checked', true);
+                case 5000:
+                $('#int5').prop('checked', true);
                 break;
 
                 case 60000:
-                default:
                 $('#int60').prop('checked', true);
+                break;
+
+                case 10000:
+                default:
+                $('#int10').prop('checked', true);
                 break;
             }
 
@@ -174,11 +175,11 @@
 
                 // There's a timer running: invalidate it, so that update() can start a new one
                 if (localStorage['timeout-id'] !== '') {
-                invalidateCurrentTimer();
-            }
+                    invalidateCurrentTimer();
+                }
 
-            update();
-        }
+                update();
+            }
 
     </script>
 

@@ -1,0 +1,8 @@
+
+Version 0.12
+- Shorter update intervals
+- Remove debugging counter
+- Continue polling when logged out
+
+Version 0.11
+- Initial release

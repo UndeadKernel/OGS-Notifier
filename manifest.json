@@ -1,6 +1,6 @@
 {
     "name"            : "OGS Notifier",
-    "version"         : "0.11",
+    "version"         : "0.12",
     "background_page" : "background.html",
     "description"     : "Checks for games where it is your turn.",
     "options_page"    : "options.html",
@@ -13,7 +13,7 @@
                         },
     "permissions"     : [
         "http://www.online-go.com/*", "http://online-go.com/*",
-        "http://www.online-go.org/*", "http://online-go.org/*"
+        "http://www.online-go.org/*", "http://online-go.org/*", "http://ogs.guffin.info/*"
         ],
     "browser_action"  : {
         "default_icon"  : "notifier.png",

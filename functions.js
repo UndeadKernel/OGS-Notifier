@@ -1,4 +1,25 @@
 
+// Ensure that the timer continues polling.  Interruption can occur when a packet gets lost.
+function keepAlive() {
+
+    // check if the update timer's last timestamp was less than the current poll interval
+    var curstamp = new Date().getTime();
+
+    if (localStorage['timer_timestamp'] + localStorage['interval'] > curstamp) 
+    {
+        // invalidate the old timer, just in case
+        invalidateCurrentTimer();
+        update();
+        if (localStorage['debug'] == 1) {
+            console.log("Keep Alive: just reupped the timer");
+        }
+    }
+}
+
+function create(tag) {
+    return $(document.createElement(tag));
+}
+
 function invalidateCurrentTimer()
 {
     // DEBUG:
@@ -26,11 +47,6 @@ function update() {
         context: document.body,
         success: function(response){
 
-            // DEBUG
-            if (localStorage['debug'] == 1) {
-                localStorage['count'] ++;
-            }
-
             // if we're not logged in, stop checking
             if (response == -1) {
                 response = "err";
@@ -39,18 +55,20 @@ function update() {
 
             } else {
 
-                // wait for at least 20 seconds and reload the function
-                var wait = Math.max(20000, localStorage['interval']);
-
-                localStorage['timeout-id'] = setTimeout(update, wait);
-
-                // DEBUG:
-                if (localStorage['debug'] == 1) {
-                    console.log("Started new timer " + localStorage['timeout-id'] + ", waiting "+ (wait / 1000) + " seconds");
-                }
-
                 localStorage['logged-in']   = 'true';
             }
+
+            // wait for at least 5 seconds and reload the function
+            var wait = Math.max(5000, localStorage['interval']);
+
+            localStorage['timeout-id']      = setTimeout(update, wait);
+            localStorage['timer_timestamp'] = new Date().getTime();
+
+            // DEBUG:
+            if (localStorage['debug'] == 1) {
+                console.log("Started new timer " + localStorage['timeout-id'] + ", waiting "+ (wait / 1000) + " seconds");
+            }
+
 
             // DEBUG:
             if (localStorage['debug'] == 1) {

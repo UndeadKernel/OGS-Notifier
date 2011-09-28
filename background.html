@@ -15,6 +15,7 @@
                 localStorage.removeItem('url');
                 localStorage.removeItem('include_viewed');
                 localStorage.removeItem('display_zero');
+                localStorage.removeItem('timer_timestamp');
                 console.log("Options were removed from local storage");
             }
 
@@ -28,15 +29,14 @@
                 localStorage['display_zero']   = 'false';
             }
 
-            // DEBUG:
-            if (localStorage['debug'] == 1) {
-                localStorage['count'] = 0;
-            }
-
             // invalidate any stored counters when the browser starts up
             invalidateCurrentTimer();
 
             update(); // starts polling for games
+
+            // ensure the updater keeps updating with 5-minute checks
+            window.keep_alive = setInterval(keepAlive,5 * 60 * 1000);
+
         </script>
     </head>
 </html>

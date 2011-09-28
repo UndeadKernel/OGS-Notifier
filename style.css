@@ -14,7 +14,32 @@ body {
     padding: 10px;
     background-color: #47A;
     border: 1px solid #CCC;
+}
+
+.options {
     width: 300px;
+}
+
+#remote-information {
+    white-space: nowrap;
+}
+
+#remote-information table {
+    border-collapse:collapse;
+}
+
+#remote-information .row0 td {
+    background-color: #79B;
+    white-space: nowrap;
+}
+
+#remote-information .row1 td {
+    background-color: #58A;
+    white-space: nowrap;
+}
+
+#remote-information td {
+    padding: 0 5px;
 }
 
 img {
