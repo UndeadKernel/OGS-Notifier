@@ -88,77 +88,90 @@
 
     // clear the results container
     $('#remote-information').show().html("");
+    $('#login-wrapper').hide();
 
-        // download the game/message information from the notifier
-        var notifierURL = root+"/games/xmlnotifier.php?format=json",
-        notifierURL     = "http://ogs.guffin.info/games/xmlnotifier.php?format=json";
-        /*
-        {
-            "id"           : "305567",
-            "opponentName" : "betterlife",
-            "deadline"     : "2011-09-29T13:35:33",
-            "name"         : "OGS Tianyuan 2010 (Main Class), Round 2 Group 3",
-            "size"         : "19",
-            "ruleset"      : "Chinese",
-            "toMove"       : "1"
-        } */
+    // download the game/message information from the notifier
+    var notifierURL = root+"/games/xmlnotifier.php?format=json";
+    /*
+    {
+        "id"           : "305567",
+        "opponentName" : "betterlife",
+        "deadline"     : "2011-09-29T13:35:33",
+        "name"         : "OGS Tianyuan 2010 (Main Class), Round 2 Group 3",
+        "size"         : "19",
+        "ruleset"      : "Chinese",
+        "toMove"       : "1"
+    } */
 
-        $.get(notifierURL, function(data) {
-            var games    = data.games;
-            var messages = data.messages;
+    $.get(notifierURL, function(data) {
+        var games    = data.games;
+        var messages = data.messages;
 
-            var gameTable = create('table');
-
-            // inject each game into the DOM
-            for (var i = 0; i < games.length; i++) {
-
-                var gameRow = create('tr');
-                var url = "javascript:chrome.tabs.create( {url: '" + root+"/games/board.php?boardID=" + games[i].id + "' } )";
-
-                // Extract the date in milliseconds since epoch
-                var dt  = new Date(games[i].deadline.replace("T", " ") + " UTC" ).getTime();
-
-                // Express the time until the deadline in seconds
-                dt = (dt - new Date().getTime() ) / 1000;
-
-                var days  = Math.floor(dt / (3600 * 24) ); dt -= days  * 3600 * 24;
-                var hours = Math.floor(dt / (3600)      ); dt -= hours * 3600;
-                var mins  = Math.floor(dt / (60)        );
-
-                // Construct a plain-text description of the time until the deadline
-                var remaining = "";
-                if (days  > 0) remaining += days + "d";
-                remaining += " " + hours + "h";
-                if (days == 0) remaining += "  " + mins + "m";
-
-                // Create table elements containing the data
-                gameRow
+        var gameTable  = create('table')
+        .append( create('tr')
                 .append(
-                    create('td').html(create('a').attr('href', url).html(games[i].id))
+                    create('td').html("")
                 )
                 .append(
-                    create('td').html(remaining)
+                    create('td').html("Board")
                 )
                 .append(
-                    create('td').html(games[i].opponentName)
-                );
+                    create('td').html("Deadline")
+                )
+                .append(
+                    create('td').html("Opponent")
+                ).addClass('rowh')
+        );
 
-                gameRow.addClass( 'row' + (i % 2) );
-                gameTable.append( gameRow );
-                gameTable.attr('id','games');
-            }
-            $('#remote-information').append(gameTable);
-            $('#remote-information').width($('#games').width())
+        // inject each game into the DOM
+        for (var i = 0; i < games.length; i++) {
 
+            var gameRow = create('tr');
+            var url = "javascript:chrome.tabs.create( {url: '" + root+"/games/board.php?boardID=" + games[i].id + "' } )";
 
-            //$('body').append( "Name: " + data.name ) // John
-            //.append( "Time: " + data.time ); //  2pm
-        }, "json");
+            // Extract the date in milliseconds since epoch
+            var dt  = new Date(games[i].deadline.replace("T", " ") + " UTC" ).getTime();
 
-        // jump to mygames
+            // Express the time until the deadline in seconds
+            dt = (dt - new Date().getTime() ) / 1000;
 
-        $('#login-wrapper').hide();
-    }
+            var days  = Math.floor(dt / (3600 * 24) ); dt -= days  * 3600 * 24;
+            var hours = Math.floor(dt / (3600)      ); dt -= hours * 3600;
+            var mins  = Math.floor(dt / (60)        );
+
+            // Construct a plain-text description of the time until the deadline
+            var remaining = "";
+            if (days  > 0) remaining += days + "d";
+            remaining += " " + hours + "h";
+            if (days == 0) remaining += "  " + mins + "m";
+
+            // Create table elements containing the data
+            gameRow
+            .append(
+                create('td').html(i+1)
+            )
+            .append(
+                create('td').html(create('a').attr('href', url).html(games[i].id))
+            )
+            .append(
+                create('td').html(remaining)
+            )
+            .append(
+                create('td').html(games[i].opponentName)
+            );
+
+            gameRow.addClass( 'row' + (i % 2) );
+            gameTable.append( gameRow );
+            gameTable.attr('id','games');
+
+        } // for ( ... games ... )
+
+        $('#remote-information').append(gameTable);
+        $('#remote-information').width($('#games').width());
+
+        }, "json"); // $.get(...
+
+    } // if logged in
 
 </script>
 

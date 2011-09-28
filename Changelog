@@ -1,8 +1,10 @@
 
-Version 0.12
+Version 0.12 - 2011-09-07
 - Shorter update intervals
 - Remove debugging counter
 - Continue polling when logged out
+- Popup shows a list of games to move in
+- Auto detect logins
 
-Version 0.11
+Version 0.11 - 2011-09-07
 - Initial release

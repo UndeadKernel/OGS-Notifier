@@ -1,10 +1,9 @@
 
 Detect logged-in state better
-    - Currently does not properly detect when logged-in state changes. 
     - Fix the login form button
     - Show logged-in status when switching server in options 
-    - Store username/password?
+    - Store username/password (pw encoded sha1)?
 
-Show games from xmlnotifier in popup.html
+Fix flicker when popup loads for the first time
 
-Add option to force refresh to right-click menu
+Add option to force refresh to right-click menu (invalidate timer and restart)

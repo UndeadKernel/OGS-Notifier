@@ -16,6 +16,7 @@ function keepAlive() {
     }
 }
 
+// shorthand for creating dom elements
 function create(tag) {
     return $(document.createElement(tag));
 }

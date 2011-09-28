@@ -24,8 +24,23 @@ body {
     white-space: nowrap;
 }
 
+#remote-information a {
+    color: #333;
+}
+
 #remote-information table {
+    border: 1px solid white;
     border-collapse:collapse;
+}
+
+#remote-information .rowh td {
+    background-color: #58A;
+    font-weight: bold;
+    color: black;
+}
+
+.rowh {
+    border: 1px solid white;
 }
 
 #remote-information .row0 td {
@@ -39,7 +54,8 @@ body {
 }
 
 #remote-information td {
-    padding: 0 5px;
+    padding: 2px 5px;
+    color: white;
 }
 
 img {
