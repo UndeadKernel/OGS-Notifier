@@ -1,5 +1,6 @@
 body {
     background-color: #257;
+    font: 10pt verdana,tahoma,arial,sans-serif;
 }
 
 .alert {
@@ -24,8 +25,13 @@ body {
     white-space: nowrap;
 }
 
+#remote-information tr {
+    cursor:pointer;
+}
+
 #remote-information a {
     color: #333;
+    text-decoration: none;
 }
 
 #remote-information table {
@@ -43,18 +49,23 @@ body {
     border: 1px solid white;
 }
 
-#remote-information .row0 td {
+#remote-information .row0 {
     background-color: #79B;
     white-space: nowrap;
 }
 
-#remote-information .row1 td {
+#remote-information .row1 {
     background-color: #58A;
     white-space: nowrap;
 }
 
+#remote-information tr:hover {
+    background-color: orange;
+}
+
 #remote-information td {
-    padding: 2px 5px;
+    font: 10pt verdana,tahoma,arial,sans-serif;
+    padding: 5px 5px;
     color: white;
 }
 
@@ -83,5 +94,10 @@ p {
 
 a {
     color: #333;
+    text-decoration: none;
+}
+
+#remote-information .unviewed td {
+    color: #8F0;
 }
 

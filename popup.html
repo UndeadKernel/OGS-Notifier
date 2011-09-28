@@ -11,7 +11,7 @@
             <legend>Login</legend>
 
             <table>
-                <tr> 
+                <tr>
                     <td> <label style="float:left;">User</label> </td>
                     <td>
                         <div class="menulogin">
@@ -20,7 +20,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr> 
+                <tr>
                     <td> <label style="float:left;">Password</label> </td>
                     <td>
                         <div class="menulogin">
@@ -28,7 +28,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr> 
+                <tr>
                     <td>
                         <input id='submit' style="width:100%; margin: 10px 0;" type="submit" value="Log In" />
                     </td>
@@ -43,7 +43,10 @@
         </fieldset>
     </div>
 
-    <div style="display:none;" id="remote-information"></div>
+    <div style="display:none;" id="remote-information">
+        <a id="mygames-link" style="text-align:center; display:block; margin-bottom:10px;">Go to mygames</a>
+        <div id="games-injection"></div>
+    </div>
 
 </div> <!-- content-wrapper -->
 
@@ -87,8 +90,14 @@
     } else {
 
     // clear the results container
-    $('#remote-information').show().html("");
+    $('#remote-information').show();
+    $('#games.injection').html("");
     $('#login-wrapper').hide();
+
+    $('#mygames-link').attr('href', root + "/games/mygames.php").click( function() {
+        chrome.tabs.create( {url: $(this).attr('href') } );
+    });
+
 
     // download the game/message information from the notifier
     var notifierURL = root+"/games/xmlnotifier.php?format=json";
@@ -103,6 +112,7 @@
         "toMove"       : "1"
     } */
 
+    // download and parse the game information
     $.get(notifierURL, function(data) {
         var games    = data.games;
         var messages = data.messages;
@@ -113,21 +123,24 @@
                     create('td').html("")
                 )
                 .append(
-                    create('td').html("Board")
-                )
+                    create('td').html("Opponent")
+                ).addClass('rowh')
                 .append(
                     create('td').html("Deadline")
                 )
-                .append(
-                    create('td').html("Opponent")
-                ).addClass('rowh')
         );
 
         // inject each game into the DOM
         for (var i = 0; i < games.length; i++) {
 
             var gameRow = create('tr');
-            var url = "javascript:chrome.tabs.create( {url: '" + root+"/games/board.php?boardID=" + games[i].id + "' } )";
+
+            // put the link in the row's rel attribute so that it can be accessed from the click() function
+            gameRow.attr('rel', root + "/games/board.php?boardID=" + games[i].id);
+
+            gameRow.click( function() {
+                chrome.tabs.create( {url: $(this).attr('rel') } );
+            });
 
             // Extract the date in milliseconds since epoch
             var dt  = new Date(games[i].deadline.replace("T", " ") + " UTC" ).getTime();
@@ -145,13 +158,14 @@
             remaining += " " + hours + "h";
             if (days == 0) remaining += "  " + mins + "m";
 
+            // make the board reference bold if it's unviewed
+            if (games[i].viewed === "0")
+                gameRow.addClass('unviewed');
+
             // Create table elements containing the data
             gameRow
             .append(
                 create('td').html(i+1)
-            )
-            .append(
-                create('td').html(create('a').attr('href', url).html(games[i].id))
             )
             .append(
                 create('td').html(remaining)
@@ -162,12 +176,22 @@
 
             gameRow.addClass( 'row' + (i % 2) );
             gameTable.append( gameRow );
-            gameTable.attr('id','games');
+
+            // uncomment below to test very long lines
+            //gameTable.append( create('tr').append( create('td').attr('colspan', '3').html("junk") ) );
 
         } // for ( ... games ... )
 
-        $('#remote-information').append(gameTable);
-        $('#remote-information').width($('#games').width());
+        // append the game table to the dom
+        gameTable.attr('id','games');
+        $('#games-injection').append(gameTable);
+
+        // detect scrollbars and set the width accordingly.  Chrome limits popups to 600px height, 800px width
+        $('#games').ready( function() {
+            var db = document.body;
+            var sw = (db.scrollHeight < 600) ? 0 : db.clientWidth - db.offsetWidth;
+            $('body').css('padding-right', sw + 'px');
+        });
 
         }, "json"); // $.get(...
 
