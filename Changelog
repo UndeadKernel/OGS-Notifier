@@ -1,15 +1,18 @@
+Version 0.14 - 2011-10-01
+- Tweak CSS
+- Fix column order in popup header
 
-Version 0.13 - 2011-09-08
+Version 0.13 - 2011-09-28
 - Discard board number links; rows are now links
 - Highlight unviewed games 
 - Scollbar detection and width adjustment for long game lists
 
-Version 0.12 - 2011-09-07
+Version 0.12 - 2011-09-27
 - Shorter update intervals
 - Remove debugging counter
 - Continue polling when logged out
 - Popup shows a list of games to move in
 - Auto detect logins
 
-Version 0.11 - 2011-09-07
+Version 0.11 - 2011-09-27
 - Initial release
