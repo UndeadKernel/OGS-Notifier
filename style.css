@@ -39,14 +39,20 @@ body {
     border-collapse:collapse;
 }
 
+#remote-information .row0:hover,
+#remote-information .row1:hover {
+    background-color: lightblue;
+}
+
 #remote-information .rowh td {
-    background-color: #58A;
+    cursor:auto;
     font-weight: bold;
     color: black;
 }
 
 .rowh {
     border: 1px solid white;
+    background-color: #58A;
 }
 
 #remote-information .row0 {
@@ -57,10 +63,6 @@ body {
 #remote-information .row1 {
     background-color: #58A;
     white-space: nowrap;
-}
-
-#remote-information tr:hover {
-    background-color: orange;
 }
 
 #remote-information td {
@@ -98,6 +100,6 @@ a {
 }
 
 #remote-information .unviewed td {
-    color: #8F0;
+    color: #135;
 }
 

@@ -44,7 +44,7 @@
     </div>
 
     <div style="display:none;" id="remote-information">
-        <a id="mygames-link" style="text-align:center; display:block; margin-bottom:10px;">Go to mygames</a>
+        <a id="mygames-link" style="text-align:center; display:block; margin-bottom:10px; font-weight:bold;">Go to mygames</a>
         <div id="games-injection"></div>
     </div>
 
@@ -94,6 +94,7 @@
     $('#games.injection').html("");
     $('#login-wrapper').hide();
 
+    // pop up a new mygames when when the link is clicked
     $('#mygames-link').attr('href', root + "/games/mygames.php").click( function() {
         chrome.tabs.create( {url: $(this).attr('href') } );
     });
@@ -123,10 +124,10 @@
                     create('td').html("")
                 )
                 .append(
-                    create('td').html("Opponent")
+                    create('td').html("Deadline")
                 ).addClass('rowh')
                 .append(
-                    create('td').html("Deadline")
+                    create('td').html("Opponent")
                 )
         );
 
