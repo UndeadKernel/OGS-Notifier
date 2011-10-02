@@ -1,3 +1,7 @@
+Version 0.15 - 2011-10-01
+- Tweak CSS
+- Bug https://github.com/joshguffin/OGS-Notifier/issues/1 squashed (wasn't updating setting display properly)
+
 Version 0.14 - 2011-10-01
 - Tweak CSS
 - Fix column order in popup header

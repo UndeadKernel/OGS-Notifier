@@ -18,7 +18,7 @@ body {
 }
 
 .options {
-    width: 300px;
+    width: 400px;
 }
 
 #remote-information {
@@ -83,8 +83,9 @@ input {
 }
 
 .help {
+    padding: 2px 10px;
     color: white;
-    max-width: 300px;
+    max-width: 400px;
     text-align: justify;
     display : none;
 }

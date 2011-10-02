@@ -23,7 +23,7 @@
             </p>
 
             <div>
-                <input id='display-zero' type='checkbox' onclick="updateDisplayZero(this.checked);" />
+                <input id='display_zero' type='checkbox' onclick="updateDisplayZero(this.checked);" />
                 display '0' for no games to move<sup>[<a href="javascript:$('#display-help').toggle()">?</a>]</sup>
             </div>
 
@@ -91,7 +91,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input id='int10' name='interval' type='radio' onclick="updateInterval(10000)" /> Ten Seconds 
+                        <input id='int10' name='interval' type='radio' onclick="updateInterval(10000)" /> Ten Seconds
                     </td>
                 </tr>
                 <tr>
@@ -104,22 +104,25 @@
         </div>
 
         <script>
-            // When page initially loads, set the proper 'include-viewed' selection
+            // When page initially loads, set the proper 'include-viewed' and 'display-zero' selections
             if (localStorage['include_viewed'] == 'true')  {
                 $('#include_viewed').prop('checked', true);
+            }
+            if (localStorage['display_zero'] == 'true')  {
+                $('#display_zero').prop('checked', true);
             }
 
             // When page initially loads, set the proper interval selection
             switch(localStorage['interval']) {
-                case 5000:
+                case '5000':
                 $('#int5').prop('checked', true);
                 break;
 
-                case 60000:
+                case '60000':
                 $('#int60').prop('checked', true);
                 break;
 
-                case 10000:
+                case '10000':
                 default:
                 $('#int10').prop('checked', true);
                 break;
