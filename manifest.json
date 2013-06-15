@@ -1,7 +1,7 @@
 {
     "manifest_version"        : 2,
     "name"                    : "OGS Notifier",
-    "version"                 : "0.16",
+    "version"                 : "0.17",
     "background"              : "background.html",
     "description"             : "Checks for games where it is your turn.",
     "options_page"            : "options.html",

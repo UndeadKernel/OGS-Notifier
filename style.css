@@ -83,11 +83,14 @@ input {
 }
 
 .help {
-    padding: 2px 10px;
-    color: white;
+    margin: 10px;
+    padding: 5px 5px;
+    color: black;
     max-width: 400px;
     text-align: justify;
     display : none;
+    background: #8ac;
+    border: 1px solid #ccc;
 }
 
 p {
