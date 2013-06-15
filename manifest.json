@@ -1,23 +1,24 @@
 {
-    "name"            : "OGS Notifier",
-    "version"         : "0.15",
-    "background_page" : "background.html",
-    "description"     : "Checks for games where it is your turn.",
-    "options_page"    : "options.html",
-    "homepage_url"    : "https://github.com/joshguffin/OGS-Notifier",
-    "icons"           : {
-                            "16"  : "notifier.png",
-                            "32"  : "notifier.png",
-                            "48"  : "notifier.png",
-                            "128" : "notifier.png"
-                        },
-    "permissions"     : [
-        "http://www.online-go.com/*", "http://online-go.com/*",
-        "http://www.online-go.org/*", "http://online-go.org/*"
-        ],
-    "browser_action"  : {
-        "default_icon"  : "notifier.png",
-        "default_title" : "OGS Notifier",
-        "popup"         : "popup.html"
-    }
+    "manifest_version"        : 2,
+    "name"                    : "OGS Notifier",
+    "version"                 : "0.16",
+    "background"              : "background.html",
+    "description"             : "Checks for games where it is your turn.",
+    "options_page"            : "options.html",
+    "homepage_url"            : "https://github.com/joshguffin/OGS-Notifier",
+    "icons"                   : {
+                                    "16"  : "notifier.png",
+                                    "32"  : "notifier.png",
+                                    "48"  : "notifier.png",
+                                    "128" : "notifier.png"
+                                },
+    "permissions"             : [
+                                    "http://www.online-go.com/*", "http://online-go.com/*",
+                                    "http://www.online-go.org/*", "http://online-go.org/*"
+                                ],
+    "browser_action"          : {
+                                    "default_icon"  : "notifier.png",
+                                    "default_title" : "OGS Notifier",
+                                    "default_popup" : "popup.html"
+                                }
 }
