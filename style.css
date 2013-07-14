@@ -1,6 +1,8 @@
 body {
     background-color: #257;
     font: 10pt verdana,tahoma,arial,sans-serif;
+    padding-right: 0;
+    min-width: 180px;
 }
 
 .alert {
@@ -110,4 +112,3 @@ a {
 #remote-information .unviewed td {
     color: #135;
 }
-
