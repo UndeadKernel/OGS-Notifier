@@ -21,6 +21,10 @@ body {
     width: 400px;
 }
 
+#mygames-link:focus {
+   outline: none;
+}
+
 #remote-information {
     white-space: nowrap;
 }
