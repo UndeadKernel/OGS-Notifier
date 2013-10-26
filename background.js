@@ -27,6 +27,21 @@ function invalidateCurrentTimer()
    }
 }
 
+function updateBadge(gameList, user, requestTime)
+{
+   var count = 0;
+   for (var ii = 0; ii < gameList.length; ++ii) {
+      var game = gameList[ii];
+      var data = extractData(game, user);
+      var turn = data[1].turn;
+
+      if (turn)
+         count++;
+   }
+
+   chrome.browserAction.setBadgeText({text:"" + count});
+}
+
 /*
  * Update the game count by polling
  */
@@ -40,47 +55,7 @@ function update() {
    if (debug)
       console.log("Update called");
 
-   $.ajax({
-      url: root + "/includes/functions/ajax/gameCount.php" + view,
-      context: document.body,
-      success: function(response){
-
-         var debug = localStorage['debug'] == 1;
-         if (debug)
-            console.log("Timer " + localStorage['timeout-id'] + " reported \""+ response + "\" ");
-
-         // if we're not logged in, stop checking
-         if (response == -1) {
-            response = "err";
-            localStorage['logged-in'] = 'false';
-            invalidateCurrentTimer();
-
-            if (debug)
-               console.log("update(): not logged in");
-
-         } else {
-            localStorage['logged-in']   = 'true';
-
-            if (debug)
-               console.log("update(): logged in");
-         }
-
-         // wait for at least 5 seconds and reload the function
-         var wait = Math.max(5000, localStorage['interval']);
-
-         localStorage['timeout-id']      = setTimeout(update, wait);
-         localStorage['timer_timestamp'] = new Date().getTime();
-
-         if (debug)
-            console.log("Started new timer " + localStorage['timeout-id'] + ", waiting "+ (wait / 1000) + " seconds");
-
-         // update the numerical overlay
-         if (response == 0 && localStorage['display_zero'] !== 'true')
-            response = "";  // zero games = no badge
-
-         chrome.browserAction.setBadgeText({text:response});
-      }
-   });
+   begin_scrape(updateBadge);
 }
 
 function initializeLocalStorage()
