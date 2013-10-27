@@ -1,22 +1,4 @@
 
-function updateBadge(page, requestTime)
-{
-   var count = 0;
-   var games = page.games;
-   var total = page.games.length;
-
-   for (var ii = 0; ii < total; ++ii) {
-      var game = games[ii];
-      var data = extractData(game, user);
-      var turn = data[1].turn;
-
-      if (turn)
-         count++;
-   }
-
-   chrome.browserAction.setBadgeText({text:"" + count});
-}
-
 /*
  * Update the game count by polling
  */

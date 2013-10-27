@@ -27,7 +27,9 @@ function populate_popup(page, requestTime)
    for (var ii = 0; ii < length; ++ii) {
       var game = page.games[ii];
       var data = GameData(game, user);
-      sortedList.push(data);
+
+      if (data.my_turn)
+         sortedList.push(data);
    }
 
    var dataSort = function(lhs, rhs) {
@@ -62,9 +64,6 @@ function populate_data(games, requestTime)
       var gameRow = create('tr');
 
       var game = games[i];
-
-      if (!game.my_turn)
-         continue;
 
       // put the link in the row's rel attribute so that it can be accessed from the click() function
       gameRow.attr('rel', game.link);

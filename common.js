@@ -115,6 +115,30 @@ function set_initial_display_state(area)
    }
 }
 
+function updateBadge(page, requestTime)
+{
+   var count = 0;
+   var user  = page.user;
+   var games = page.games;
+   var total = page.games.length;
+
+   for (var ii = 0; ii < total; ++ii) {
+      var game = games[ii];
+      var data = GameData(game, user);
+      var turn = data.my_turn;
+
+      if (turn)
+         count++;
+   }
+
+
+   var display = (count !== 0 || localStorage['display_zero']
+                  ? "" + count
+                  : "");
+
+   chrome.browserAction.setBadgeText({text:display});
+}
+
 function begin_scrape(callback)
 {
    // clear the results container, show ajax spinner, hide html result wrapper
@@ -140,12 +164,14 @@ function begin_scrape(callback)
          }
 
          localStorage['logged-in'] = true;
-     
+
          if (page.games.length == 0)
             return;
 
          if (localStorage['debug'] == 1)
             console.log("Parsing " + page.games.length + " total games");
+
+         updateBadge(page, requestTime);
 
          callback(page, requestTime);
       }
