@@ -39,6 +39,11 @@ function populate_popup(page, requestTime)
    populate_data(sortedList, requestTime);
 }
 
+function load_main_page()
+{
+   chrome.tabs.create( {url: "http://www.online-go.com" } );
+}
+
 function populate_data(games, requestTime)
 {
    var delay = 0;
@@ -123,6 +128,8 @@ function populate_data(games, requestTime)
 
 function initialize() {
    begin_scrape(populate_popup);
+
+   $('#login-link').click(load_main_page);
 }
 
 window.addEventListener("load", initialize);

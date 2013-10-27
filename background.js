@@ -85,8 +85,8 @@ function resetLocalStorage()
 
 function initialize() {
 
-   localStorage['debug'] = 1; // debug on
-   //localStorage['debug'] = 0; // debug off
+   //localStorage['debug'] = 1; // debug on
+   localStorage['debug'] = 0; // debug off
 
    // DEBUG: clear existing values on load
    if (localStorage['debug'] == 1)
