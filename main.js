@@ -18,16 +18,23 @@ function visibility_fuse(name)
    };
 }
 
-function populate_popup(gameList, user, requestTime)
+function populate_popup(page, requestTime)
 {
    var sortedList = [];
+   var user = page.user;
+   var length = page.games.length;
 
-   for (var ii = 0; ii < gameList.length; ++ii) {
-      var game = gameList[ii];
-      sortedList.push(extractData(game, user));
+   for (var ii = 0; ii < length; ++ii) {
+      var game = page.games[ii];
+      var data = GameData(game, user);
+      sortedList.push(data);
    }
 
-   sortedList.sort();
+   var dataSort = function(lhs, rhs) {
+      return lhs.time_left > rhs.time_left;
+   }
+
+   sortedList.sort(dataSort);
 
    populate_data(sortedList, requestTime);
 }
@@ -49,9 +56,9 @@ function populate_data(games, requestTime)
 
       var gameRow = create('tr');
 
-      var game = games[i][1];
+      var game = games[i];
 
-      if (!game.turn)
+      if (!game.my_turn)
          continue;
 
       // put the link in the row's rel attribute so that it can be accessed from the click() function
@@ -64,7 +71,7 @@ function populate_data(games, requestTime)
       // Create table elements containing the data
       gameRow
          .append(create('td').html(my_turn_count + 1))
-         .append(create('td').html(game.time))
+         .append(create('td').html(game.time_desc))
          .append(create('td').html(game.opponent));
 
       var name = "Row"+my_turn_count;
@@ -115,8 +122,6 @@ function populate_data(games, requestTime)
 }
 
 function initialize() {
-
-   //build_popup();
    begin_scrape(populate_popup);
 }
 

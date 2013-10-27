@@ -1,4 +1,103 @@
 
+function GamePage(data) {
+
+   var that = {};
+
+   that.data = data;
+   that.games = [];
+
+   var getUserName = function (data) {
+      var regex = /var global_user = .*username: "(.*?)".*;/
+      var matches = regex.exec(data);
+
+      return matches === null ? "" : matches[1];
+   }
+
+   var getGameList = function (data) {
+      var regex = /var list = (.*?);/
+      var matches = regex.exec(data);
+
+      if (matches === null)
+         return [];
+
+      var gameList = JSON.parse(matches[1]);
+
+      return gameList.length ? gameList : [];
+   }
+
+   that.user  = getUserName(data);
+   that.games = getGameList(data);
+
+   return that;
+}
+
+function GameData(game, user)
+{
+   var describe = function (time)
+   {
+      if (typeof time != "number")
+         return time;
+
+      var days  = Math.floor(time / 86400);
+      time -= days * 86400;
+
+      var hours = Math.floor(time / 3600);
+      time -= hours * 3600;
+
+      var minutes = Math.floor(time / 60);
+      time -= minutes * 60;
+
+      var description = "";
+      if (days > 0)
+         description += "" + days + "d ";
+
+      if (hours > 0)
+         description += "" + hours + "h ";
+
+      if (days > 0 && hours > 0)
+         return description;
+
+      if (minutes > 0)
+         description += "" + minutes + "m ";
+
+      return description;
+   }
+
+   var timeLeft = function () {
+      var clock   = game.json.clock;
+      var my_time = game.black.username === user ? clock.black_time : clock.white_time;
+      return my_time.thinking_time;
+   }
+
+   var getOpponent = function () {
+      var black = game.black;
+      var white = game.white;
+      return black.username === user ? white.username : black.username;
+   }
+
+   var isMyTurn = function () {
+      var current_player_id    = game.json.clock.current_player;
+      var current_player_black = current_player_id === game.json.black_player_id;
+      var current_player_name  = current_player_black ? game.black.username : game.white.username;
+      return current_player_name === user;
+   }
+
+   var createLink = function () {
+      var game_num  = game.json.game_id;
+      return "http://online-go.com/game/" + game_num;
+   }
+
+   var that = {};
+
+   that.time_left = timeLeft()
+   that.time_desc = describe(that.time_left)
+   that.my_turn   = isMyTurn();
+   that.opponent  = getOpponent();
+   that.link      = createLink();
+
+   return that;
+}
+
 function set_initial_display_state(area)
 {
    $('#games-injection').hide();
@@ -16,81 +115,6 @@ function set_initial_display_state(area)
    }
 }
 
-function getUserName(data)
-{
-   var regex = /var global_user = (.*);/
-   var matches = regex.exec(data);
-   if (matches === null) {
-      return "";
-   }
-
-   var user_contents = matches[1];
-   var user_creator  = new Function("return " + user_contents + ";");
-   var global_user   = user_creator();
-
-   if (global_user === undefined || global_user === null)
-      return "";
-
-   return global_user.username;
-}
-
-function timeLeft(time)
-{
-   var days  = Math.floor(time / 86400);
-   time -= days * 86400;
-
-   var hours = Math.floor(time / 3600);
-   time -= hours * 3600;
-
-   var minutes = Math.floor(time / 60);
-   time -= minutes * 60;
-
-   time = Math.floor(time);
-
-   var description = "";
-   if (days > 0)
-      description += "" + days + "d ";
-
-   if (hours > 0)
-      description += "" + hours + "h ";
-
-   if (days > 0 && hours > 0)
-      return description;
-
-   if (minutes > 0)
-      description += "" + minutes + "m ";
-
-   return description;
-}
-
-function extractData(game, user)
-{
-   var black = game.black;
-   var white = game.white;
-
-   var me  = black.username === user ? black : white;
-   var opp = black.username === user ? white : black;
-
-   var clock    = game.json.clock;
-   var current_player_id   = clock.current_player;
-   var current_player_name = current_player_id === game.json.black_player_id
-                           ? black.username 
-                           : white.username;
-   var my_turn = current_player_name === user;
-
-   var my_time  = black.username === user ? clock.black_time : clock.white_time;
-   var opp_name = opp.username;
-
-   var game_data = game.json;
-   var game_num  = game_data.game_id;
-   var time_left = my_time.thinking_time;
-   var remaining = timeLeft(time_left);
-
-   var link = "http://online-go.com/game/" + game_num;
-
-   return [ time_left, { time: remaining, link: link, opponent: opp_name, turn: my_turn} ];
-}
-
 function begin_scrape(callback)
 {
    // clear the results container, show ajax spinner, hide html result wrapper
@@ -100,36 +124,30 @@ function begin_scrape(callback)
    var requestTime = new Date().getTime();
    $.ajax({
       url: "http://online-go.com/games",
-   dataType: 'text',
-   success: function(data) {
+      dataType: 'text',
+      success: function(data) {
 
-      var user = getUserName(data);
-      var debug = localStorage['debug'] == 1;
+         var page = GamePage(data);
 
-      if (debug)
-         console.log("Data arrived for " + user);
+         if (localStorage['debug'] == 1)
+            console.log("Data arrived for " + page.user);
 
-      if (user.length === 0) {
-         return;
+         if (page.user.length === 0) {
+            localStorage['logged-in'] = false;
+            set_initial_display_state("login");
+            chrome.browserAction.setBadgeText({text:"Err"});
+            return;
+         }
+
+         localStorage['logged-in'] = true;
+     
+         if (page.games.length == 0)
+            return;
+
+         if (localStorage['debug'] == 1)
+            console.log("Parsing " + page.games.length + " total games");
+
+         callback(page, requestTime);
       }
-
-      var regex = /var list = (.*?);/
-      var matches = regex.exec(data);
-
-      if (matches === null) {
-         console.log(data);
-         return;
-      }
-
-      var gameList = JSON.parse(matches[1]);
-
-      if (!gameList.length)
-         return;
-
-      if (debug)
-         console.log("Parsing " + gameList.length + " total games");
-
-      callback(gameList, user, requestTime);
-   }
    });
 }

@@ -27,11 +27,14 @@ function invalidateCurrentTimer()
    }
 }
 
-function updateBadge(gameList, user, requestTime)
+function updateBadge(page, requestTime)
 {
    var count = 0;
-   for (var ii = 0; ii < gameList.length; ++ii) {
-      var game = gameList[ii];
+   var games = page.games;
+   var total = page.games.length;
+
+   for (var ii = 0; ii < total; ++ii) {
+      var game = games[ii];
       var data = extractData(game, user);
       var turn = data[1].turn;
 
