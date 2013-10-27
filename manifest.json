@@ -4,7 +4,6 @@
     "version"          : "0.21",
     "background"       : { "page": "background.html" },
     "description"      : "Checks for games where it is your turn.",
-    "options_page"     : "options.html",
     "homepage_url"     : "https://github.com/joshguffin/OGS-Notifier",
     "icons"            : {
                              "16"  : "notifier.png",

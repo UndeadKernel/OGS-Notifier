@@ -1,32 +1,4 @@
 
-// Ensure that the timer continues polling.  Interruption can occur when a packet gets lost.
-function keepAlive() {
-
-   // check if the update timer's last timestamp was less than the current poll interval
-   var curstamp = new Date().getTime();
-
-   if (localStorage['timer_timestamp'] + localStorage['interval'] <= curstamp)
-      return;
-
-   // invalidate the old timer, just in case
-   invalidateCurrentTimer();
-   update();
-   if (localStorage['debug'] == 1)
-      console.log("keepAlive(): just reupped the timer");
-}
-
-function invalidateCurrentTimer()
-{
-   // DEBUG:
-   if (localStorage['debug'] == 1)
-      console.log("invalidateCurrentTimer(): timeout=" + localStorage['timeout-id']);
-
-   if (localStorage['timeout-id'] !== '') {
-      clearTimeout(localStorage['timeout-id']);
-      localStorage['timeout-id'] = '';
-   }
-}
-
 function updateBadge(page, requestTime)
 {
    var count = 0;
@@ -49,13 +21,8 @@ function updateBadge(page, requestTime)
  * Update the game count by polling
  */
 function update() {
-   chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 0]});
 
-   var root  = localStorage['url'];
-   var view  = localStorage['include_viewed'] == 'true' ? "" : "?only_unviewed=true";
-   var debug = localStorage['debug'] == 1;
-
-   if (debug)
+   if (localStorage['debug'] == 1)
       console.log("Update called");
 
    begin_scrape(updateBadge);
@@ -63,23 +30,14 @@ function update() {
 
 function initializeLocalStorage()
 {
-   localStorage['timeout-id']     = '';
-   localStorage['interval']       = 20000;
-   localStorage['logged-in']      = "false";
-   localStorage['url']            = "http://www.online-go.com";
-   localStorage['include_viewed'] = 'false';
-   localStorage['display_zero']   = 'false';
+   localStorage['logged-in']    = "false";
+   localStorage['display_zero'] = 'false';
 }
 
 function resetLocalStorage()
 {
-   localStorage.removeItem('timeout-id');
-   localStorage.removeItem('interval');
    localStorage.removeItem('logged-in');
-   localStorage.removeItem('url');
-   localStorage.removeItem('include_viewed');
    localStorage.removeItem('display_zero');
-   localStorage.removeItem('timer_timestamp');
    console.log("Options were removed from local storage");
 }
 
@@ -100,13 +58,11 @@ function initialize() {
       initializeLocalStorage();
    }
 
-   // invalidate any stored counters when the browser starts up
-   invalidateCurrentTimer();
-
-   update(); // starts polling for games
+   chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 0]});
+   update();
 
    // ensure the updater keeps updating with 5-minute checks
-   window.keep_alive = setInterval(keepAlive, 5 * 60 * 1000);
+   window.keep_alive = setInterval(update, 5 * 60 * 1000);
 }
 
 window.addEventListener("load", initialize);
