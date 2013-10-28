@@ -1,7 +1,7 @@
 {
     "manifest_version" : 2,
     "name"             : "OGS Notifier",
-    "version"          : "0.22",
+    "version"          : "0.23",
     "background"       : { "page": "background.html" },
     "description"      : "Checks for games where it is your turn.",
     "homepage_url"     : "https://github.com/joshguffin/OGS-Notifier",

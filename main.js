@@ -33,7 +33,7 @@ function populate_popup(page, requestTime)
    }
 
    var dataSort = function(lhs, rhs) {
-      return lhs.time_left > rhs.time_left;
+      return lhs.time_left - rhs.time_left;
    }
 
    sortedList.sort(dataSort);
