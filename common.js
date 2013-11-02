@@ -64,9 +64,14 @@ function GameData(game, user)
    }
 
    var timeLeft = function () {
-      var clock   = game.json.clock;
-      var my_time = game.black.username === user ? clock.black_time : clock.white_time;
-      return my_time.thinking_time;
+
+      var now = new Date();
+      var exp = new Date(game.json.clock.expiration);
+
+      // convert from milliseconds to seconds
+      var remaining = (exp - now) / 1000.0;
+
+      return remaining;
    }
 
    var getOpponent = function () {
