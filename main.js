@@ -4,6 +4,9 @@ function create(tag) {
    return $(document.createElement(tag));
 }
 
+/**
+ * Delay for displaying the row to the user
+ */
 function get_next_row_delay(delay, position)
 {
    //console.log("delay for " + position + " is " + delay);
@@ -41,11 +44,10 @@ function populate_popup(page, requestTime)
    populate_data(sortedList, requestTime);
 }
 
-function load_main_page()
-{
-   chrome.tabs.create( {url: "http://www.online-go.com" } );
-}
-
+/**
+ * games is a list of game objects:
+ * game { "link": "http://..", "time_desc": "1d 15hr", "opponent": "a_player" }
+ */
 function populate_data(games, requestTime)
 {
    var delay = 0;
@@ -110,25 +112,18 @@ function populate_data(games, requestTime)
    var completionTime  = new Date().getTime();
    var transitionDelay = Math.min(500 - (completionTime - requestTime), 500);
 
-   //$('#games-injection').show();
-   //$('#ajax-loader').hide();
    window.setTimeout(function() {
       $('#ajax-loader').slideUp('slow');
       $('#games-injection').fadeIn(250);
-      //$('#games-injection').show("scale", {}, 1000);
    }, transitionDelay);
-
-   //$('#games-injection').slideDown('slow');
-
-   // re-show the table container and hide the ajax spinner
-   //$('#games-injection').show();
-   //$('#ajax-loader').hide();
 }
 
 function initialize() {
    begin_scrape(populate_popup);
 
-   $('#login-link').click(load_main_page);
+   $('#login-link').click(function() {
+      chrome.tabs.create( {url: "http://online-go.com" } );
+   });
 }
 
 window.addEventListener("load", initialize);
