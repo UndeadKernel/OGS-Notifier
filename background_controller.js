@@ -1,4 +1,4 @@
-function Controller()
+function BackgroundController()
 {
    function _updateBadge(api_game_list, api_user_object)
    {
@@ -193,18 +193,4 @@ function Controller()
    return that;
 }
 
-function initialize()
-{
-   window.controller = Controller();
 
-   observer = {};
-   observer.game_data_updated = function (controller) {
-      console.log("game_data_updated: " + controller.api_user_object.username);
-      console.log("game_data_updated: count=" + controller.my_turn_count);
-   }
-
-   window.controller.observers.push(observer);
-}
-
-
-window.addEventListener("load", initialize);

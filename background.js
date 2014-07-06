@@ -36,6 +36,14 @@ function initialize() {
 
    // ensure the updater keeps updating with 5-minute checks
    //window.keep_alive = setInterval(update, 5 * 60 * 1000);
+   window.background_controller = BackgroundController();
+   observer = {};
+   observer.game_data_updated = function (controller_caller) {
+      console.log("game_data_updated: " + controller_caller.api_user_object.username
+                  +  " count=" + controller_caller.my_turn_count);
+   }
+
+   window.background_controller.observers.push(observer);
 }
 
 window.addEventListener("load", initialize);
