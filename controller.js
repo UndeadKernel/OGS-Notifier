@@ -32,10 +32,12 @@ function Controller()
    that.model           = null;
    that.my_turn_count   = null;
    that.observers       = [];
+   that.is_logged_in    = false;
 
    // private functions
    //---------------------------------------------------------------------------
-   function _for_each_model(callback) {
+   function _for_each_model(callback)
+   {
       var models = that.model_game_dict;
       var keys = Object.keys(models);
       for (index in keys) {
@@ -47,14 +49,15 @@ function Controller()
       }
    }
 
-   function remove_completed_games() {
+   function remove_completed_games()
+   {
       var remover = {};
       var to_remove = []
 
       function add_callback(key, models) {
          var game_object = models[key].api_game;
          var outcome = game_object.outcome;
-         if (outcome === "")
+         if (outcome !== "")
             return;
 
          if (localStorage['debug'] == 1)
@@ -109,12 +112,16 @@ function Controller()
       remove_completed_games();
    }
 
-   function user_games_success(api_game_list) {
+   function user_games_success(api_game_list)
+   {
+      that.is_logged_in = true;
       that.api_game_list = api_game_list;
       construct_game_info();
    }
 
-   function user_data_success(api_user_object) {
+   function user_data_success(api_user_object)
+   {
+      that.is_logged_in = true;
       that.api_user_object = api_user_object;
       construct_game_info();
    }
@@ -146,16 +153,20 @@ function Controller()
       that.my_turn_count = count;
    }
 
-   function game_data_updated() {
-
-      _update_turn_count();
+   function _for_each_observer(callback)
+   {
       for (key in that.observers) {
          if (!that.observers.hasOwnProperty(key))
             continue;
 
-         var observer = that.observers[key];
-         observer.game_data_updated(that);
+         callback(that.observers[key]);
       }
+   }
+
+   function game_data_updated()
+   {
+      _update_turn_count();
+      _for_each_observer(function(obs) { obs.game_data_updated(that); });
    }
 
    // public_functions
@@ -174,8 +185,8 @@ function Controller()
    request_my_games();
    request_my_data();
 
-   // check for new games
-   var delay = localStorage['update_interval'];
+   // check for new data
+   var delay = localStorage['login_check_interval'];
    setInterval(request_my_games, delay);
    setInterval(request_my_data,  delay);
 

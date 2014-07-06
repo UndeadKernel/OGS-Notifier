@@ -2,22 +2,23 @@ function initializeLocalStorage()
 {
    localStorage['logged-in']    = "false";
    localStorage['display_zero'] = 'false';
-   localStorage['update_interval'] = 5 * 60 * 1000;
+   localStorage['game_update_interval'] = 5 * 60 * 1000;
+   localStorage['login_check_interval'] = 5 * 1000;
 }
 
 function resetLocalStorage()
 {
    localStorage.removeItem('logged-in');
    localStorage.removeItem('display_zero');
-   localStorage.removeItem('update_interval');
+   localStorage.removeItem('game_update_interval');
+   localStorage.removeItem('login_check_interval');
 
    console.log("Options were removed from local storage");
 }
 
 function initialize() {
 
-   //localStorage['debug'] = 1; // debug on
-   localStorage['debug'] = 1; // debug off
+   localStorage['debug'] = 1;
 
    // DEBUG: clear existing values on load
    if (localStorage['debug'] == 1)

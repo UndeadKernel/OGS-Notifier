@@ -13,6 +13,8 @@ function ApiWrapper()
          success  : callback.user_data_success,
          error    : error_handler,
       });
+
+      request.fail(error_handler);
    }
 
    function request_game_info(game_id, callback)
@@ -31,6 +33,8 @@ function ApiWrapper()
          success  : success_handler,
          error    : error_handler,
       });
+
+      request.fail(error_handler);
    }
 
    function request_my_games(callback_function)
@@ -41,7 +45,6 @@ function ApiWrapper()
 
    function _obtain_user_games(base_url, initial_data, callback_function)
    {
-      var requestTime = new Date().getTime();
       $.ajax({
          url: base_url,
          dataType: 'json',

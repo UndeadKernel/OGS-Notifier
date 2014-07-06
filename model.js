@@ -82,7 +82,7 @@ function GameObject(api_game_object, api_user_object, api_wrapper, controller)
       if (that.interval !== null)
          return;
 
-      var delay = localStorage['update_interval'];
+      var delay = localStorage['game_update_interval'];
       that.interval = window.setInterval(request_api_data, delay);
    }
 
