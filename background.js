@@ -1,9 +1,10 @@
 function initializeLocalStorage()
 {
-   localStorage['logged-in']    = "false";
+   localStorage['logged-in']    = 'false';
    localStorage['display_zero'] = 'false';
    localStorage['game_update_interval'] = 5 * 60 * 1000;
    localStorage['login_check_interval'] = 5 * 1000;
+   localStorage['game_count_only_my_turn'] = 'false';
 }
 
 function resetLocalStorage()
@@ -12,6 +13,7 @@ function resetLocalStorage()
    localStorage.removeItem('display_zero');
    localStorage.removeItem('game_update_interval');
    localStorage.removeItem('login_check_interval');
+   localStorage.removeItem('game_count_only_my_turn');
 
    console.log("Options were removed from local storage");
 }
@@ -43,6 +45,8 @@ function initialize() {
                   +  " count=" + controller_caller.my_turn_count);
    }
 
+   window.badge_updater = BadgeUpdater();
+   window.background_controller.observers.push(window.badge_updater);
    window.background_controller.observers.push(observer);
 }
 

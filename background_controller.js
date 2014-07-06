@@ -31,6 +31,7 @@ function BackgroundController()
    that.wrap            = ApiWrapper();
    that.model           = null;
    that.my_turn_count   = null;
+   that.my_total_count  = null;
    that.observers       = [];
    that.is_logged_in    = false;
 
@@ -57,7 +58,7 @@ function BackgroundController()
       function add_callback(key, models) {
          var game_object = models[key].api_game;
          var outcome = game_object.outcome;
-         if (outcome !== "")
+         if (outcome === "")
             return;
 
          if (localStorage['debug'] == 1)
@@ -137,9 +138,11 @@ function BackgroundController()
    function _update_turn_count() {
 
       var count = 0;
+      var games = 0;
 
       function update_callback(key, models) {
          var game_object = models[key];
+         games++;
 
          // game data has not arrived yet
          if (game_object.game_data === null)
@@ -150,7 +153,8 @@ function BackgroundController()
       }
 
       _for_each_model(update_callback);
-      that.my_turn_count = count;
+      that.my_turn_count  = count;
+      that.my_total_count = games;
    }
 
    function _for_each_observer(callback)
@@ -193,4 +197,22 @@ function BackgroundController()
    return that;
 }
 
+function BadgeUpdater()
+{
+   var that = {};
 
+   that.user_data_failed  = function(controller) {}
+   that.game_data_updated = function(controller) {
+      var count = (localStorage['game_count_only_my_turn']
+         ? controller.my_turn_count
+         : controller.my_total_count);
+
+      var display = (count !== 0 || localStorage['display_zero']
+            ? "" + count
+            : "");
+
+      chrome.browserAction.setBadgeText({text:display});
+   };
+
+   return that;
+}
