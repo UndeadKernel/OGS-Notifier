@@ -5,37 +5,11 @@ function create(tag) {
 }
 
 /**
- * Delay for displaying the row to the user
- */
-function get_next_row_delay(delay, position)
-{
-   //console.log("delay for " + position + " is " + delay);
-   return delay + 100 / (1 + Math.sqrt(position));
-}
-
-function visibility_fuse(name)
-{
-   return function() {
-      var dt = new Date().getTime();
-      $('#'+name).show();
-   };
-}
-
-function populate_popup(games, requestTime)
-{
-   function dataSort(lhs, rhs) { return lhs.time_left - rhs.time_left; };
-   games.sort(dataSort);
-   populate_data(games, requestTime);
-}
-
-/**
  * games is a list of game objects:
  * game { "link": "http://..", "time_desc": "1d 15hr", "opponent": "a_player" }
  */
-function populate_data(games, requestTime)
+function populate_data(games)
 {
-   var delay = 0;
-
    var gameTable  = create('table')
       .append( create('tr')
             .append( create('td').html(""))
@@ -64,14 +38,10 @@ function populate_data(games, requestTime)
          .append(create('td').html(game.opponent));
 
       var name = "Row"+my_turn_count;
-      delay = get_next_row_delay(delay, my_turn_count);
 
       gameRow.addClass('row' + (my_turn_count % 2));
       gameRow.attr('id', name);
       gameTable.append(gameRow);
-
-      window.setTimeout(visibility_fuse(name), delay);
-      gameRow.hide();
 
       my_turn_count++;
 
@@ -91,34 +61,26 @@ function populate_data(games, requestTime)
       $('body').css('padding-right', sw + 'px');
    });
 
-   // wait at least half a second so the transition isn't so jarring
-   var completionTime  = new Date().getTime();
-   var transitionDelay = Math.min(500 - (completionTime - requestTime), 500);
-
-   window.setTimeout(function() {
-      $('#ajax-loader').slideUp('slow');
-      $('#games-injection').fadeIn(250);
-   }, transitionDelay);
+   $('#games-injection').fadeIn(250);
 }
 
 function initialize()
 {
-   var requestTime = new Date().getTime();
-
    chrome.runtime.sendMessage({method: "popup_games"}, function(games) {
       $('#games-injection').hide();
       $('#games.injection').html("");
 
       if (games === null) {
          $('#remote-information').hide();
-         $('#ajax-loader').hide();
          $('#login-wrapper').show();
       }
       else {
          $('#remote-information').show();
-         $('#ajax-loader').show();
          $('#login-wrapper').hide();
-         populate_popup(games, requestTime);
+
+         function dataSort(lhs, rhs) { return lhs.time_left - rhs.time_left; };
+         games.sort(dataSort);
+         populate_data(games);
       }
    });
 
