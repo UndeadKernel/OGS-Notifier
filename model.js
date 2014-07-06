@@ -70,6 +70,7 @@ function GameObject(api_game_object, api_user_object, api_wrapper, controller)
    that.api_wrap   = api_wrapper;
    that.controller = controller;
    that.game_data  = null;
+   that.interval   = null;
 
    // private functions
    //---------------------------------------------------------------------------
@@ -78,8 +79,11 @@ function GameObject(api_game_object, api_user_object, api_wrapper, controller)
    }
 
    var start_timer = function() {
+      if (that.interval !== null)
+         return;
+
       var delay = localStorage['update_interval'];
-      window.setTimeout(request_api_data, delay);
+      that.interval = window.setInterval(request_api_data, delay);
    }
 
    // interact with api wrapper
@@ -88,15 +92,23 @@ function GameObject(api_game_object, api_user_object, api_wrapper, controller)
    callback_wrap.game_data_success = function(game_id, new_api_game_object) {
       that.api_game = new_api_game_object;
       that.game_data = GameData(that.api_game, that.api_user);
-      start_timer();
       controller.game_data_updated();
    }
    callback_wrap.game_data_failed = function(id, text) {
       controller.game_data_failed(id, text);
    }
 
+   // public functions
+   //---------------------------------------------------------------------------
+   that.stop_timer = function() {
+      if (that.interval !== null) 
+         window.clearInterval(that.interval);
+      that.interval = null;
+   }
+
    // complete setup
    //---------------------------------------------------------------------------
    request_api_data();
+   start_timer();
    return that;
 }

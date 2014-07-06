@@ -48,7 +48,7 @@ function ApiWrapper()
          success: function(data) {
 
             if (localStorage['debug'] == 1)
-               console.log(data.count + " games arrived from " + base_url);
+               console.log("_obtain_user_games: " + data.count + " from " + base_url);
 
             consolidated = initial_data.concat(data.results);
 

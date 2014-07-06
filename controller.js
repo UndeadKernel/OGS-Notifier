@@ -1,5 +1,3 @@
-
-
 function Controller()
 {
    function _updateBadge(api_game_list, api_user_object)
@@ -30,32 +28,54 @@ function Controller()
    that.api_user_object = null;
    that.api_game_list   = null;
    that.model_game_dict = {};
-   that.wrap = ApiWrapper();
-   that.model = null;
+   that.wrap            = ApiWrapper();
+   that.model           = null;
+   that.my_turn_count   = null;
+   that.observers       = [];
 
    // private functions
    //---------------------------------------------------------------------------
-   function remove_completed_games() {
-      var to_remove = []
-
+   function _for_each_model(callback) {
       var models = that.model_game_dict;
       var keys = Object.keys(models);
-      for (key in keys) {
+      for (index in keys) {
+         var key = keys[index];
          if (!models.hasOwnProperty(key))
             continue;
 
-         var game_object = models[key].api_game;
-         var outcome = game_object.outcome 
-         if (outcome === "") {
-            if (localStorage['debug'] == 1)
-               console.log("remove game " + game_object.id + " with outcome " + outcome);
+         callback(key, models);
+      }
+   }
 
-            to_remove.append(key);
-         }
+   function remove_completed_games() {
+      var remover = {};
+      var to_remove = []
+
+      function add_callback(key, models) {
+         var game_object = models[key].api_game;
+         var outcome = game_object.outcome;
+         if (outcome === "")
+            return;
+
+         if (localStorage['debug'] == 1)
+            console.log("remove game " + game_object.id + " with outcome " + outcome);
+
+         to_remove.push(key);
       }
 
-      for (key in to_remove)
+      _for_each_model(add_callback);
+
+      if (localStorage['debug'] == 1)
+         console.log("remove_completed_games: " + to_remove);
+
+      for (index in to_remove) {
+         var key = to_remove[index];
+         if (localStorage['debug'] == 1)
+            console.log("removing: " + key);
+
+         that.model_game_dict[key].stop_timer();
          delete that.model_game_dict[key];
+      }
    }
 
    function construct_game_info()
@@ -107,6 +127,31 @@ function Controller()
       that.wrap.request_user_data(that);
    }
 
+   function update_turn_count() {
+
+      function update_callback(key, models) {
+         var count = 0;
+         var game_object = models[key].api_game;
+         if (game_object.game_data.my_turn)
+            count++;
+
+         that.my_turn_count = count;
+      }
+
+      _for_each_model(update_callback);
+   }
+
+   function notify_observers() {
+
+      for (key in that.observers) {
+         if (!that.observers.hasOwnProperty(key))
+            continue;
+
+         var observer = that.observers[key];
+         observer.game_data_updated(that);
+      }
+   }
+
    // public_functions
    //---------------------------------------------------------------------------
    //
@@ -116,7 +161,7 @@ function Controller()
 
    // model interaction
    that.game_data_failed = function (id, text) { console.log("game_data_failed: " + id + " " + text); };
-   that.game_data_updated = function() { console.log("game_data_updated"); };
+   that.game_data_updated = notify_observers;
 
    // remainder of constructor calls
    //---------------------------------------------------------------------------
@@ -127,11 +172,20 @@ function Controller()
    var delay = localStorage['update_interval'];
    setInterval(request_my_games, delay);
    setInterval(request_my_data,  delay);
+
+   return that;
 }
 
 function initialize()
 {
    window.controller = Controller();
+
+   observer = {};
+   observer.game_data_updated = function (controller) {
+      console.log("game_data_updated: " + controller.api_user_object.username);
+   }
+
+   window.controller.observers.push(observer);
 }
 
 
