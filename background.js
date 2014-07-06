@@ -2,7 +2,7 @@ function initializeLocalStorage()
 {
    localStorage['logged-in']    = 'false';
    localStorage['display_zero'] = 'false';
-   localStorage['game_update_interval'] = 5 * 60 * 1000;
+   localStorage['game_update_interval'] = 10 * 1000;
    localStorage['login_check_interval'] = 5 * 1000;
    localStorage['game_count_only_my_turn'] = 'false';
 }
