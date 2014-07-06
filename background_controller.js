@@ -1,32 +1,11 @@
 function BackgroundController()
 {
-   function _updateBadge(api_game_list, api_user_object)
-   {
-      var count = 0;
-      var total = api_game_list.length;
-
-      for (var ii = 0; ii < total; ++ii) {
-         var game = api_game_list[ii];
-         var data = GameData(game, api_user_object);
-         var turn = data.my_turn;
-
-         if (turn)
-            count++;
-      }
-
-      var display = (count !== 0 || localStorage['display_zero']
-         ? "" + count
-         : "");
-
-         chrome.browserAction.setBadgeText({text:display});
-   }
-
    var that = {}
 
    // members
    //---------------------------------------------------------------------------
    that.api_user_object = null;
-   that.api_game_list   = null;
+   that.api_game_list   = [];
    that.model_game_dict = {};
    that.wrap            = ApiWrapper();
    that.model           = null;
@@ -58,7 +37,9 @@ function BackgroundController()
       function add_callback(key, models) {
          var game_object = models[key].api_game;
          var outcome = game_object.outcome;
-         if (outcome === "")
+
+         // remove games that have an outcome, or if the game list was cleared
+         if (outcome === "" && that.api_game_list.length !== 0)
             return;
 
          if (localStorage['debug'] == 1)
@@ -85,9 +66,6 @@ function BackgroundController()
    function construct_game_info()
    {
       if (that.api_user_object === null)
-         return;
-
-      if (that.api_game_list === null)
          return;
 
       if (localStorage['debug'] == 1)
@@ -120,15 +98,28 @@ function BackgroundController()
       construct_game_info();
    }
 
+   function user_data_failure(status)
+   {
+      if (!this.is_logged_in)
+         return;
+
+      this.is_logged_in = false;
+      that.api_game_list = [];
+      construct_game_info();
+      that.api_user_object = null;
+
+      _for_each_observer(function(obs) { obs.user_data_failed(that); });
+      console.log("user_data_failed: " + status);
+   }
+
    function user_data_success(api_user_object)
    {
       that.is_logged_in = true;
       that.api_user_object = api_user_object;
-      construct_game_info();
-   }
-
-   function request_my_games() {
       that.wrap.request_my_games(user_games_success);
+      construct_game_info();
+
+      console.log("user_data_success: " + status);
    }
 
    function request_my_data() {
@@ -173,11 +164,24 @@ function BackgroundController()
       _for_each_observer(function(obs) { obs.game_data_updated(that); });
    }
 
+   function popup_listener(request, sender, callback)
+   {
+      if (request.method === "popup_games")
+         callback(that.model_game_dict);
+
+      else if (request.method === "popup_gamecount") {
+         if (localStorage['game_count_only_my_turn'])
+            callback(that.my_turn_count);
+         else
+            callback(that.my_total_count);
+      }
+   }
+
    // public_functions
    //---------------------------------------------------------------------------
    //
    // api interaction
-   that.user_data_failed = function(status) { console.log("user_data_failed: " + status); };
+   that.user_data_failed  = user_data_failure;
    that.user_data_success = user_data_success;
 
    // model interaction
@@ -186,13 +190,11 @@ function BackgroundController()
 
    // remainder of constructor calls
    //---------------------------------------------------------------------------
-   request_my_games();
+   chrome.extension.onRequest.addListener(popup_listener);
    request_my_data();
 
    // check for new data
-   var delay = localStorage['login_check_interval'];
-   setInterval(request_my_games, delay);
-   setInterval(request_my_data,  delay);
+   setInterval(request_my_data,  localStorage['login_check_interval']);
 
    return that;
 }
@@ -201,7 +203,9 @@ function BadgeUpdater()
 {
    var that = {};
 
-   that.user_data_failed  = function(controller) {}
+   that.user_data_failed  = function(controller) {
+      chrome.browserAction.setBadgeText({text:"Err"});
+   }
    that.game_data_updated = function(controller) {
       var count = (localStorage['game_count_only_my_turn']
          ? controller.my_turn_count

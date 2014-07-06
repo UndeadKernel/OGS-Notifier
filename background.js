@@ -40,12 +40,15 @@ function initialize() {
    //window.keep_alive = setInterval(update, 5 * 60 * 1000);
    window.background_controller = BackgroundController();
    observer = {};
+   observer.user_data_failed = function(c) { console.log("Logged Out"); };
    observer.game_data_updated = function (controller_caller) {
       console.log("game_data_updated: " + controller_caller.api_user_object.username
                   +  " count=" + controller_caller.my_turn_count);
    }
 
    window.badge_updater = BadgeUpdater();
+   window.badge_updater.user_data_failed();
+
    window.background_controller.observers.push(window.badge_updater);
    window.background_controller.observers.push(observer);
 }
