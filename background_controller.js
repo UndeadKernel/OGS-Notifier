@@ -163,15 +163,21 @@ function BackgroundController()
 
    function popup_listener(request, sender, callback)
    {
-      if (request.method === "popup_games")
-         callback(that.model_game_dict);
-
-      else if (request.method === "popup_gamecount") {
-         if (localStorage['game_count_only_my_turn'])
-            callback(that.my_turn_count);
-         else
-            callback(that.my_total_count);
+      if (!that.is_logged_in) {
+         callback(null);
+         return;
       }
+
+      var games = [];
+
+      function append_callback(key, models) {
+         var game_data = models[key].game_data;
+         if (game_data.my_turn)
+            games.push(game_data);
+      }
+
+      _for_each_model(append_callback);
+      callback(games);
    }
 
    // public_functions
@@ -182,12 +188,12 @@ function BackgroundController()
    that.user_data_success = user_data_success;
 
    // model interaction
-   that.game_data_failed = function (id, text) { console.log("game_data_failed: " + id + " " + text); };
+   that.game_data_failed  = function (id, text) { console.log("game_data_failed: " + id + " " + text); };
    that.game_data_updated = game_data_updated;
 
    // remainder of constructor calls
    //---------------------------------------------------------------------------
-   chrome.extension.onRequest.addListener(popup_listener);
+   chrome.runtime.onMessage.addListener(popup_listener);
    request_my_data();
 
    // check for new data

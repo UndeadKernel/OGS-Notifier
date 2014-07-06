@@ -21,27 +21,11 @@ function visibility_fuse(name)
    };
 }
 
-function populate_popup(page, requestTime)
+function populate_popup(games, requestTime)
 {
-   var sortedList = [];
-   var user = page.user;
-   var length = page.games.length;
-
-   for (var ii = 0; ii < length; ++ii) {
-      var game = page.games[ii];
-      var data = GameData(game, user);
-
-      if (data.my_turn)
-         sortedList.push(data);
-   }
-
-   var dataSort = function(lhs, rhs) {
-      return lhs.time_left - rhs.time_left;
-   }
-
-   sortedList.sort(dataSort);
-
-   populate_data(sortedList, requestTime);
+   function dataSort(lhs, rhs) { return lhs.time_left - rhs.time_left; };
+   games.sort(dataSort);
+   populate_data(games, requestTime);
 }
 
 /**
@@ -64,7 +48,6 @@ function populate_data(games, requestTime)
    for (var i = 0; i < games.length; ++i) {
 
       var gameRow = create('tr');
-
       var game = games[i];
 
       // put the link in the row's rel attribute so that it can be accessed from the click() function
@@ -118,8 +101,26 @@ function populate_data(games, requestTime)
    }, transitionDelay);
 }
 
-function initialize() {
-   begin_scrape(populate_popup);
+function initialize()
+{
+   var requestTime = new Date().getTime();
+
+   chrome.runtime.sendMessage({method: "popup_games"}, function(games) {
+      $('#games-injection').hide();
+      $('#games.injection').html("");
+
+      if (games === null) {
+         $('#remote-information').hide();
+         $('#ajax-loader').hide();
+         $('#login-wrapper').show();
+      }
+      else {
+         $('#remote-information').show();
+         $('#ajax-loader').show();
+         $('#login-wrapper').hide();
+         populate_popup(games, requestTime);
+      }
+   });
 
    $('#login-link').click(function() {
       chrome.tabs.create( {url: "http://online-go.com" } );
