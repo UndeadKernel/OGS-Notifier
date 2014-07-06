@@ -127,22 +127,28 @@ function Controller()
       that.wrap.request_user_data(that);
    }
 
-   function update_turn_count() {
+   function _update_turn_count() {
+
+      var count = 0;
 
       function update_callback(key, models) {
-         var count = 0;
-         var game_object = models[key].api_game;
+         var game_object = models[key];
+
+         // game data has not arrived yet
+         if (game_object.game_data === null)
+            return;
+
          if (game_object.game_data.my_turn)
             count++;
-
-         that.my_turn_count = count;
       }
 
       _for_each_model(update_callback);
+      that.my_turn_count = count;
    }
 
-   function notify_observers() {
+   function game_data_updated() {
 
+      _update_turn_count();
       for (key in that.observers) {
          if (!that.observers.hasOwnProperty(key))
             continue;
@@ -161,7 +167,7 @@ function Controller()
 
    // model interaction
    that.game_data_failed = function (id, text) { console.log("game_data_failed: " + id + " " + text); };
-   that.game_data_updated = notify_observers;
+   that.game_data_updated = game_data_updated;
 
    // remainder of constructor calls
    //---------------------------------------------------------------------------
@@ -183,6 +189,7 @@ function initialize()
    observer = {};
    observer.game_data_updated = function (controller) {
       console.log("game_data_updated: " + controller.api_user_object.username);
+      console.log("game_data_updated: count=" + controller.my_turn_count);
    }
 
    window.controller.observers.push(observer);

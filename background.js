@@ -2,7 +2,7 @@ function initializeLocalStorage()
 {
    localStorage['logged-in']    = "false";
    localStorage['display_zero'] = 'false';
-   localStorage['update_interval'] = 5 * 1000;
+   localStorage['update_interval'] = 5 * 60 * 1000;
 }
 
 function resetLocalStorage()
