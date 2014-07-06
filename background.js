@@ -14,13 +14,24 @@ function resetLocalStorage()
    localStorage.removeItem('game_update_interval');
    localStorage.removeItem('login_check_interval');
    localStorage.removeItem('game_count_only_my_turn');
-
-   console.log("Options were removed from local storage");
 }
+
+function DebugObserver()
+{
+   var that = {};
+   that.user_data_failed = function(c) { console.log("Logged Out"); };
+   that.game_data_updated = function (controller_caller) {
+      console.log("game_data_updated: " + controller_caller.api_user_object.username
+                  +  " count=" + controller_caller.my_turn_count);
+   };
+
+   return that;
+}
+
 
 function initialize() {
 
-   localStorage['debug'] = 1;
+   localStorage['debug'] = 0;
 
    // DEBUG: clear existing values on load
    if (localStorage['debug'] == 1)
@@ -36,21 +47,16 @@ function initialize() {
 
    chrome.browserAction.setBadgeBackgroundColor({color:[255, 0, 0, 0]});
 
-   // ensure the updater keeps updating with 5-minute checks
-   //window.keep_alive = setInterval(update, 5 * 60 * 1000);
-   window.background_controller = BackgroundController();
-   observer = {};
-   observer.user_data_failed = function(c) { console.log("Logged Out"); };
-   observer.game_data_updated = function (controller_caller) {
-      console.log("game_data_updated: " + controller_caller.api_user_object.username
-                  +  " count=" + controller_caller.my_turn_count);
-   }
 
    window.badge_updater = BadgeUpdater();
-   window.badge_updater.user_data_failed();
+   window.badge_updater.user_data_failed(); // show 'Err'
 
+
+   window.background_controller = BackgroundController();
    window.background_controller.observers.push(window.badge_updater);
-   window.background_controller.observers.push(observer);
+
+   if (localStorage['debug'] == 1)
+      window.background_controller.observers.push(DebugObserver());
 }
 
 window.addEventListener("load", initialize);

@@ -109,7 +109,6 @@ function BackgroundController()
       that.api_user_object = null;
 
       _for_each_observer(function(obs) { obs.user_data_failed(that); });
-      console.log("user_data_failed: " + status);
    }
 
    function user_data_success(api_user_object)
@@ -118,8 +117,6 @@ function BackgroundController()
       that.api_user_object = api_user_object;
       that.wrap.request_my_games(user_games_success);
       construct_game_info();
-
-      console.log("user_data_success: " + status);
    }
 
    function request_my_data() {
